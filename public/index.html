@@ -6,7 +6,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <script src="./js/earthsdk/XbsjEarth/XbsjEarth.js"></script>
+    <!-- 使用纯Cesium进行开发 -->
+    <!-- <script src="./js/Cesium/Cesium.js"></script> -->
+    <!-- <link rel="stylesheet" href="./js/Cesium/Widgets/widgets.css"> -->
+
+    <!-- 使用EarthSDK进行开发 -->
+    <script src="./v1.7.6/XbsjEarthUI/xbsj.js"></script>
+    <!-- <script src="./js/earthsdk/XbsjEarth/XbsjEarth.js"></script> -->
+    <script src="./v1.7.6/XbsjEarth/XbsjEarth.js"></script>
     <style>
       html, body {
           width: 100%;

@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.12"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -27,6 +28,11 @@
     "env": {
       "node": true
     },
+    "globals": {
+      "XE": true,
+      "Cesium": true,
+      "XbsjEarthUI": true
+    },
     "extends": [
       "plugin:vue/vue3-essential",
       "eslint:recommended"
@@ -34,7 +40,9 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "vue/no-reserved-keys": "off"
+    }
   },
   "browserslist": [
     "> 1%",

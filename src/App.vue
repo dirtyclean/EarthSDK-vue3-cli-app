@@ -1,21 +1,13 @@
 <template>
-  <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-  <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-
   <div id="app" style="width: 100%; height: 100%; background: grey; position: relative;">
-      <earth-comp></earth-comp>
+      <router-view></router-view>
   </div>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-import EarthComp from './components/EarthComp.vue'
-
 export default {
   name: 'App',
   components: {
-    // HelloWorld,
-    EarthComp
   }
 }
 </script>
