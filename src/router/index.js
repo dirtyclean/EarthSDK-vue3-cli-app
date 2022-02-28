@@ -28,6 +28,13 @@ export const routes = [
             title: 'XbsjEarthUI'
         }
     },
+    {
+        path: '/plotTools',
+        component: async () => await import('@/components/plotTools.vue'),
+        meta: {
+            title: 'plotTools'
+        }
+    }
 ]
 
 export const router = createRouter({
