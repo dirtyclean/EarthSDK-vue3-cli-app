@@ -8,9 +8,16 @@
       <div
         class="defultbtn"
         :class="{ btnon: creating }"
-        @click="creating = !creating"
+        @click="renderPoint('pin1')"
       >
-        拾取
+        拾取1
+      </div>
+      <div
+        class="defultbtn"
+        :class="{ btnon: creating }"
+        @click="renderPoint('pin2')"
+      >
+        拾取2
       </div>
       <div
         class="defultbtn"
@@ -28,7 +35,8 @@
   </div>
 </template>
 <script>
-export default {
+import {defineComponent} from 'vue'
+export default defineComponent ({
   data() {
     return {
       _earth: undefined, // 注意：Earth和Cesium的相关变量放在vue中，必须使用下划线作为前缀！
@@ -50,6 +58,57 @@ export default {
       let realVal = parseFloat(value).toFixed(5);
       return realVal;
     },
+    unbind() {
+      console.log('unbind', this._creatingUnbind)
+      const x = this._creatingUnbind
+      this._creatingUnbind = this._creatingUnbind && x();
+      console.log('1')
+      this._editingUnbind = this._editingUnbind && this._editingUnbind();
+      console.log('2')
+      this._positionUnbind = this._positionUnbind && this._positionUnbind();
+      console.log('3')
+      console.log(this._creatingUnbind, this._positionUnbind)
+    },
+    renderPoint(id) {
+      this.unbind();
+      
+      const czmObject = {
+        ref: id,
+        czmObject: {
+          name: id,
+          xbsjType: "Pin",
+          near: 100,
+          // position: [1.9016974701882112, 0.5972325152147303, 425.8641913624607],
+        },
+      };
+      this._earth.sceneTree.root.children.push(czmObject);
+      console.log(this._earth.sceneTree.root.children, '===this._earth.sceneTree.root.children===')
+      var pin = this._earth.sceneTree.$refs[id].czmObject;
+      // 1.1.5 数据绑定
+      this._creatingUnbind = XE.MVVM.bind(this, "creating", pin, "creating");
+      console.log(this._creatingUnbind)
+      this._editingUnbind = XE.MVVM.bind(this, "editing", pin, "editing");
+      this._positionUnbind = XE.MVVM.bindPosition(
+        this,
+        "position",
+        pin,
+        "position",
+      );
+      XE.MVVM.watch(pin.position, () => {
+        console.log("positions发生变化！");
+      });
+      XE.MVVM.watch(pin, "creating", () => {
+        console.log("creating发生变化：" + this.creating, pin.position, pin);
+      });
+      this.creating = !this.creating;
+      // 设置初始值
+      // pin.position = [
+      //   1.9016974701882112,
+      //   0.5972325152147303,
+      //   425.8641913624607,
+      // ];
+      // window.pin = pin;
+    },
     init() {
       // 1.1.1 创建地球
       var earth = new XE.Earth(this.$refs.earthContainer);
@@ -65,17 +124,10 @@ export default {
             czmObject: {
               name: "大雁塔",
               xbsjType: "Tileset",
-              url: "http://earthsdk.com/v/last/Apps/assets/dayanta/tileset.json",
+              url:
+                "http://earthsdk.com/v/last/Apps/assets/dayanta/tileset.json",
               xbsjUseOriginTransform: false,
               skipLevelOfDetail: false,
-            },
-          },
-          {
-            ref: "pin1",
-            czmObject: {
-              name: "Pin1",
-              xbsjType: "Pin",
-              near: 100,
             },
           },
           {
@@ -89,32 +141,15 @@ export default {
       };
 
       var tileset = earth.sceneTree.$refs.tileset.czmObject;
-      var pin1 = earth.sceneTree.$refs.pin1.czmObject;
+
       // 飞入大雁塔
       tileset.flyTo();
-
-      // 1.1.5 数据绑定
-      this._creatingUnbind = XE.MVVM.bind(this, "creating", pin1, "creating");
-      this._editingUnbind = XE.MVVM.bind(this, "editing", pin1, "editing");
-      this._positionUnbind = XE.MVVM.bindPosition(
-        this,
-        "position",
-        pin1,
-        "position",
-      );
-
-      // 设置初始值
-      pin1.position = [
-        1.9016974701882112,
-        0.5972325152147303,
-        425.8641913624607,
-      ];
 
       this._earth = earth;
 
       // only for Debug
       window.earth = earth;
-      window.pin1 = pin1;
+
       window.tileset = tileset;
     },
     colorchange(event) {
@@ -127,25 +162,24 @@ export default {
     },
   },
   mounted() {
-    XE.ready()
-      .then(() => {
-        // 加载标绘插件
-        return XE.HTML.loadJS(
-          "/XbsjEarth-Plugins/plottingSymbol/plottingSymbol.js",
-        );
-      })
-      .then(() => {
+    // XE.ready()
+    //   .then(() => {
+    //     // 加载标绘插件
+    //     return XE.HTML.loadJS(
+    //       "/XbsjEarth-Plugins/plottingSymbol/plottingSymbol.js",
+    //     );
+    //   })
+    //   .then(() => {
         this.init();
-      });
+      // });
   },
+
   beforeUnmount() {
     // vue程序销毁时，需要清理相关资源
-    this._creatingUnbind = this._creatingUnbind && this._creatingUnbind();
-    this._editingUnbind = this._editingUnbind && this._editingUnbind();
-    this._positionUnbind = this._positionUnbind && this._positionUnbind();
+    this.unbind();
     this._earth = this._earth && this._earth.destroy();
   },
-};
+});
 </script>
 <style scoped>
 .box span {
