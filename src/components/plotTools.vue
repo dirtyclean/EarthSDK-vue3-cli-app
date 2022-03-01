@@ -5,26 +5,13 @@
       class="box"
       style="position: absolute; left: 18px; top: 18px; color: white; background: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 25px;min-width:200px; font-size:24px; font-family: 宋体;"
     >
-      <div
-        class="defultbtn"
-        :class="{ btnon: creating }"
-        @click="renderPoint('pin1')"
-      >
+      <div class="defultbtn" :class="{ btnon: creating }" @click="renderPoint('pin1')">
         拾取1
       </div>
-      <div
-        class="defultbtn"
-        :class="{ btnon: creating }"
-        @click="renderPoint('pin2')"
-      >
+      <div class="defultbtn" :class="{ btnon: creating }" @click="renderPoint('pin2')">
         拾取2
       </div>
-      <div
-        class="defultbtn"
-        style="margin-left:20px;"
-        :class="{ btnon: editing }"
-        @click="editing = !editing"
-      >
+      <div class="defultbtn" style="margin-left:20px;" :class="{ btnon: editing }" @click="editing = !editing">
         编辑
       </div>
       <br />
@@ -32,11 +19,64 @@
       <span>纬度：{{ numFilter2(position[1]) }}°</span>
       <span>高度：{{ numFilter(position[2]) }}m</span>
     </div>
+    <div class="tree-box">
+      <tree
+        v-model:selectedKeys="selectedKeys"
+        v-model:checkedKeys="checkedKeys"
+        default-expand-all
+        checkable
+        :height="500"
+        :tree-data="treeData"
+      >
+        <template #title="{ title, key }">
+          <span v-if="key === '0-0-1-0'" style="color: #1890ff">{{ title }}</span>
+          <template v-else>{{ title }}</template>
+        </template>
+      </tree>
+    </div>
+    <div><pinModal /></div>
   </div>
+
 </template>
 <script>
-import {defineComponent} from 'vue'
-export default defineComponent ({
+import { Tree } from 'ant-design-vue'
+import { defineComponent, ref, watch } from 'vue'
+import pinModal from './pinModal'
+function dig(path = '0', level = 3) {
+  const list = []
+
+  for (let i = 0; i < 10; i += 1) {
+    const key = `${path}-${i}`
+    const treeNode = {
+      title: key,
+      key
+    }
+
+    if (level > 0) {
+      treeNode.children = dig(key, level - 1)
+    }
+
+    list.push(treeNode)
+  }
+
+  return list
+}
+export default defineComponent({
+  setup() {
+    const selectedKeys = ref(['0-0-0', '0-0-1'])
+    const checkedKeys = ref(['0-0-0', '0-0-1'])
+    watch(selectedKeys, () => {
+      console.log('selectedKeys', selectedKeys)
+    })
+    watch(checkedKeys, () => {
+      console.log('checkedKeys', checkedKeys)
+    })
+    return {
+      treeData: dig(),
+      selectedKeys,
+      checkedKeys
+    }
+  },
   data() {
     return {
       _earth: undefined, // 注意：Earth和Cesium的相关变量放在vue中，必须使用下划线作为前缀！
@@ -44,63 +84,55 @@ export default defineComponent ({
       // 是否处于编辑状态
       // 设置为true以后，将进入重新创建的状态；此时可以使用鼠标左键在三维窗口中选取需要修改路径的关键点，当点击鼠标右键，则表示编辑完成。此时该属性会自动变成false。
       editing: false,
-      position: [0, 0, 0],
-    };
+      position: [0, 0, 0]
+    }
+  },
+  components: {
+    Tree,
+    pinModal
   },
   methods: {
     numFilter(value) {
       // 截取当前数据到小数点后两位
-      let realVal = parseFloat(value).toFixed(2);
-      return realVal;
+      let realVal = parseFloat(value).toFixed(2)
+      return realVal
     },
     numFilter2(value) {
       // 截取当前数据到小数点后五位
-      let realVal = parseFloat(value).toFixed(5);
-      return realVal;
+      let realVal = parseFloat(value).toFixed(5)
+      return realVal
     },
     unbind() {
-      console.log('unbind', this._creatingUnbind)
-      const x = this._creatingUnbind
-      this._creatingUnbind = this._creatingUnbind && x();
-      console.log('1')
-      this._editingUnbind = this._editingUnbind && this._editingUnbind();
-      console.log('2')
-      this._positionUnbind = this._positionUnbind && this._positionUnbind();
-      console.log('3')
-      console.log(this._creatingUnbind, this._positionUnbind)
+      this._creatingUnbind = this._creatingUnbind && this._creatingUnbind()
+      this._editingUnbind = this._editingUnbind && this._editingUnbind()
+      this._positionUnbind = this._positionUnbind && this._positionUnbind()
     },
     renderPoint(id) {
-      this.unbind();
-      
+      this.unbind()
+
       const czmObject = {
         ref: id,
         czmObject: {
           name: id,
-          xbsjType: "Pin",
-          near: 100,
+          xbsjType: 'Pin',
+          near: 100
           // position: [1.9016974701882112, 0.5972325152147303, 425.8641913624607],
-        },
-      };
-      this._earth.sceneTree.root.children.push(czmObject);
+        }
+      }
+      this._earth.sceneTree.root.children.push(czmObject)
       console.log(this._earth.sceneTree.root.children, '===this._earth.sceneTree.root.children===')
-      var pin = this._earth.sceneTree.$refs[id].czmObject;
+      var pin = this._earth.sceneTree.$refs[id].czmObject
       // 1.1.5 数据绑定
-      this._creatingUnbind = XE.MVVM.bind(this, "creating", pin, "creating");
-      console.log(this._creatingUnbind)
-      this._editingUnbind = XE.MVVM.bind(this, "editing", pin, "editing");
-      this._positionUnbind = XE.MVVM.bindPosition(
-        this,
-        "position",
-        pin,
-        "position",
-      );
+      this._creatingUnbind = XE.MVVM.bind(this, 'creating', pin, 'creating')
+      this._editingUnbind = XE.MVVM.bind(this, 'editing', pin, 'editing')
+      this._positionUnbind = XE.MVVM.bindPosition(this, 'position', pin, 'position')
       XE.MVVM.watch(pin.position, () => {
-        console.log("positions发生变化！");
-      });
-      XE.MVVM.watch(pin, "creating", () => {
-        console.log("creating发生变化：" + this.creating, pin.position, pin);
-      });
-      this.creating = !this.creating;
+        console.log('positions发生变化！')
+      })
+      XE.MVVM.watch(pin, 'creating', () => {
+        console.log('creating发生变化：' + this.creating, pin.position, pin)
+      })
+      this.creating = !this.creating
       // 设置初始值
       // pin.position = [
       //   1.9016974701882112,
@@ -111,55 +143,54 @@ export default defineComponent ({
     },
     init() {
       // 1.1.1 创建地球
-      var earth = new XE.Earth(this.$refs.earthContainer);
-      earth.interaction.picking.enabled = true;
+      var earth = new XE.Earth(this.$refs.earthContainer)
+      earth.interaction.picking.enabled = true
 
       // 1.1.2 场景配置
       earth.sceneTree.root = {
         expand: true,
-        title: "预览场景",
+        title: '预览场景',
         children: [
           {
-            ref: "tileset",
+            ref: 'tileset',
             czmObject: {
-              name: "大雁塔",
-              xbsjType: "Tileset",
-              url:
-                "http://earthsdk.com/v/last/Apps/assets/dayanta/tileset.json",
+              name: '大雁塔',
+              xbsjType: 'Tileset',
+              url: 'http://earthsdk.com/v/last/Apps/assets/dayanta/tileset.json',
               xbsjUseOriginTransform: false,
-              skipLevelOfDetail: false,
-            },
+              skipLevelOfDetail: false
+            }
           },
           {
             czmObject: {
-              name: "默认影像",
-              xbsjType: "Imagery",
-              xbsjImageryProvider: XE.Obj.Imagery.defaultImageryProviderConfig,
-            },
-          },
-        ],
-      };
+              name: '默认影像',
+              xbsjType: 'Imagery',
+              xbsjImageryProvider: XE.Obj.Imagery.defaultImageryProviderConfig
+            }
+          }
+        ]
+      }
 
-      var tileset = earth.sceneTree.$refs.tileset.czmObject;
+      var tileset = earth.sceneTree.$refs.tileset.czmObject
 
       // 飞入大雁塔
-      tileset.flyTo();
+      tileset.flyTo()
 
-      this._earth = earth;
+      this._earth = earth
 
       // only for Debug
-      window.earth = earth;
+      window.earth = earth
 
-      window.tileset = tileset;
+      window.tileset = tileset
     },
     colorchange(event) {
-      var color = event.target.value;
-      this.circle.color = color.xeColor;
+      var color = event.target.value
+      this.circle.color = color.xeColor
     },
     outlineColorchange(event) {
-      var outlineColor = event.target.value;
-      this.circle.outlineColor = outlineColor.xeColor;
-    },
+      var outlineColor = event.target.value
+      this.circle.outlineColor = outlineColor.xeColor
+    }
   },
   mounted() {
     // XE.ready()
@@ -170,18 +201,37 @@ export default defineComponent ({
     //     );
     //   })
     //   .then(() => {
-        this.init();
-      // });
+    this.init()
+    // });
   },
 
   beforeUnmount() {
     // vue程序销毁时，需要清理相关资源
-    this.unbind();
-    this._earth = this._earth && this._earth.destroy();
-  },
-});
+    this.unbind()
+    this._earth = this._earth && this._earth.destroy()
+  }
+})
 </script>
-<style scoped>
+<style scoped lang="scss">
+.tree-box {
+  position: absolute;
+  left: 18px;
+  top: 300px;
+  width: 294px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  border-radius: 10px;
+  /deep/.ant-tree {
+    background: transparent;
+    color: #fff
+  }
+  /deep/.ant-tree .ant-tree-node-content-wrapper:hover {
+    background-color: red;
+  }
+  /deep/ .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
+    background-color: green;
+  }
+}
 .box span {
   display: block;
   margin-top: 10px;
