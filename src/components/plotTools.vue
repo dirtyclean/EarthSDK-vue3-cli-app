@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%; height: 100%">
-    <nav />
+    <Nav1 />
     <div ref="earthContainer" style="width: 100%; height: 100%"></div>
     <div
       class="box"
@@ -50,7 +50,7 @@ import { Tree } from 'ant-design-vue'
 import { defineComponent, ref, watch } from 'vue'
 import pinModal from './pinModal'
 import areaModal from './areaModal'
-import nav from './nav.vue'
+import Nav1 from './nav.vue'
 function dig(path = '0', level = 3) {
   const list = []
 
@@ -101,7 +101,7 @@ export default defineComponent({
     Tree,
     pinModal,
     areaModal,
-    nav
+    Nav1
   },
   methods: {
     numFilter(value) {
