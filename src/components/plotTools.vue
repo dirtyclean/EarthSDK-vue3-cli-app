@@ -3,15 +3,22 @@
     <div ref="earthContainer" style="width: 100%; height: 100%"></div>
     <div
       class="box"
-      style="position: absolute; left: 18px; top: 18px; color: white; background: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 25px;min-width:200px; font-size:24px; font-family: 宋体;"
+      style="
+        position: absolute;
+        left: 18px;
+        top: 18px;
+        color: white;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 20px;
+        border-radius: 25px;
+        min-width: 200px;
+        font-size: 24px;
+        font-family: 宋体;
+      "
     >
-      <div class="defultbtn" :class="{ btnon: creating }" @click="renderPoint('pin1')">
-        拾取1
-      </div>
-      <div class="defultbtn" :class="{ btnon: creating }" @click="renderPoint('pin2')">
-        拾取2
-      </div>
-      <div class="defultbtn" style="margin-left:20px;" :class="{ btnon: editing }" @click="editing = !editing">
+      <div class="defultbtn" :class="{ btnon: creating }" @click="renderPoint('pin1')">拾取1</div>
+      <div class="defultbtn" :class="{ btnon: creating }" @click="renderPoint('pin2')">拾取2</div>
+      <div class="defultbtn" style="margin-left: 20px" :class="{ btnon: editing }" @click="editing = !editing">
         编辑
       </div>
       <br />
@@ -34,14 +41,14 @@
         </template>
       </tree>
     </div>
-    <div><pinModal /></div>
+    <div><areaModal :open="open" /></div>
   </div>
-
 </template>
 <script>
 import { Tree } from 'ant-design-vue'
 import { defineComponent, ref, watch } from 'vue'
 import pinModal from './pinModal'
+import areaModal from './areaModal'
 function dig(path = '0', level = 3) {
   const list = []
 
@@ -84,12 +91,14 @@ export default defineComponent({
       // 是否处于编辑状态
       // 设置为true以后，将进入重新创建的状态；此时可以使用鼠标左键在三维窗口中选取需要修改路径的关键点，当点击鼠标右键，则表示编辑完成。此时该属性会自动变成false。
       editing: false,
-      position: [0, 0, 0]
+      position: [0, 0, 0],
+      open: false
     }
   },
   components: {
     Tree,
-    pinModal
+    pinModal,
+    areaModal
   },
   methods: {
     numFilter(value) {
@@ -131,8 +140,12 @@ export default defineComponent({
       })
       XE.MVVM.watch(pin, 'creating', () => {
         console.log('creating发生变化：' + this.creating, pin.position, pin)
+        if (!this.creating) {
+          this.open = true
+        }
       })
       this.creating = !this.creating
+
       // 设置初始值
       // pin.position = [
       //   1.9016974701882112,
@@ -223,7 +236,7 @@ export default defineComponent({
   border-radius: 10px;
   /deep/.ant-tree {
     background: transparent;
-    color: #fff
+    color: #fff;
   }
   /deep/.ant-tree .ant-tree-node-content-wrapper:hover {
     background-color: red;
