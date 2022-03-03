@@ -1,5 +1,5 @@
 <template>
-  <modal :title="title" :style="{ width: '600px' }" :open="open">
+  <modal :title="title" :style="{ width: '600px' }" @closeModal="closeModal" :open="open">
     <a-form
       :model="formState"
       name="basic"
@@ -121,7 +121,7 @@ export default defineComponent({
       // circle.outlineColor = outlineColor.xeColor
     }
   },
-  setup() {
+  setup(props, context) {
     const formState = reactive({
       outlineShow: true, //边框显示
       ground: true, // 贴地
@@ -137,7 +137,7 @@ export default defineComponent({
       console.log('Failed:', errorInfo)
     }
     const closeModal = () => {
-      console.log('closeModal')
+      context.emit('update:open', false)
     }
     return {
       formState,

@@ -1,13 +1,13 @@
 <template>
   <div style="width: 100%; height: 100%">
-    <Nav1 />
+    <menu-nav @renderArea="renderArea"/>
     <div ref="earthContainer" style="width: 100%; height: 100%"></div>
     <div
       class="box"
       style="
         position: absolute;
-        left: 18px;
-        top: 18px;
+        right: 18px;
+        bottom: 18px;
         color: white;
         background: rgba(0, 0, 0, 0.6);
         padding: 20px;
@@ -42,7 +42,7 @@
         </template>
       </tree>
     </div>
-    <div><areaModal :open="open" /></div>
+    <div><areaModal v-model:open="open"  /></div>
   </div>
 </template>
 <script>
@@ -50,7 +50,7 @@ import { Tree } from 'ant-design-vue'
 import { defineComponent, ref, watch } from 'vue'
 import pinModal from './pinModal'
 import areaModal from './areaModal'
-import Nav1 from './nav.vue'
+import menuNav from './nav.vue'
 function dig(path = '0', level = 3) {
   const list = []
 
@@ -101,9 +101,12 @@ export default defineComponent({
     Tree,
     pinModal,
     areaModal,
-    Nav1
+    menuNav
   },
   methods: {
+    renderArea(type) {
+      console.log(type, '==renderArea')
+    },
     numFilter(value) {
       // 截取当前数据到小数点后两位
       let realVal = parseFloat(value).toFixed(2)

@@ -35,20 +35,20 @@ export default defineComponent({
   setup() {},
   methods: {
     closeModal() {
-      // open = false
-      console.log('closeModal')
+      this.$emit('closeModal')
     }
   },
   watch: {
-    open() {
-      console.log('open')
-      nextTick(() => {
-        new Draggabilly(document.querySelector('.modal-box'), {
-          // 选项...
-          handle: '.modal-title',
-          containment: '#app'
+    open(open) {
+      if (open) {
+        nextTick(() => {
+          new Draggabilly(document.querySelector('.modal-box'), {
+            // 选项...
+            handle: '.modal-title',
+            containment: '#app'
+          })
         })
-      })
+      }
     }
   },
   mounted() {}
@@ -68,7 +68,7 @@ export default defineComponent({
     border-bottom: 5px solid #000;
     margin-bottom: 10px;
     cursor: move;
-    font-size: 18px
+    font-size: 18px;
   }
   .modal-content {
     padding: 20px;
@@ -86,21 +86,21 @@ export default defineComponent({
   color: #fff;
 }
 /deep/.ant-input {
-  background-color: rgba(0,0,0,.5);
+  background-color: rgba(0, 0, 0, 0.5);
   border: none;
   color: #fff;
-  border-radius: 6px
+  border-radius: 6px;
 }
 /deep/.ant-form-item-has-error :not(.ant-input-disabled):not(.ant-input-borderless).ant-input {
-  background-color: rgba(0,0,0,.5);
+  background-color: rgba(0, 0, 0, 0.5);
   border: none;
   color: #fff;
-  border-radius: 6px
+  border-radius: 6px;
 }
 /deep/.ant-form-item-explain.ant-form-item-explain-error {
   text-align: left;
 }
 /deep/ .ant-checkbox-wrapper {
-  color: #fff
+  color: #fff;
 }
 </style>

@@ -36,7 +36,9 @@
     "globals": {
       "XE": true,
       "Cesium": true,
-      "XbsjEarthUI": true
+      "XbsjEarthUI": true,
+      "defineProps": true,
+      "defineEmits": true
     },
     "extends": [
       "plugin:vue/vue3-essential",
