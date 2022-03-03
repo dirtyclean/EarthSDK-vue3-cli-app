@@ -1,33 +1,10 @@
 <template>
   <div style="width: 100%; height: 100%">
-    <menu-nav @renderArea="renderArea" />
-    <GeoArea v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="areaKey" />
     <div ref="earthContainer" style="width: 100%; height: 100%"></div>
-    <div
-      class="box"
-      style="
-        position: absolute;
-        right: 18px;
-        bottom: 18px;
-        color: white;
-        background: rgba(0, 0, 0, 0.6);
-        padding: 20px;
-        border-radius: 25px;
-        min-width: 200px;
-        font-size: 24px;
-        font-family: 宋体;
-      "
-    >
-      <div class="defultbtn" :class="{ btnon: creating }" @click="renderPoint('pin1')">拾取1</div>
-      <div class="defultbtn" :class="{ btnon: creating }" @click="renderPoint('pin2')">拾取2</div>
-      <div class="defultbtn" style="margin-left: 20px" :class="{ btnon: editing }" @click="editing = !editing">
-        编辑
-      </div>
-      <br />
-      <span>经度：{{ numFilter2(position[0]) }}°</span>
-      <span>纬度：{{ numFilter2(position[1]) }}°</span>
-      <span>高度：{{ numFilter(position[2]) }}m</span>
-    </div>
+    <menu-nav @renderArea="renderArea" />
+    <geo-area-plot v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="sceneKey" />
+    <pin-plot v-if="isPlotPin" :_earth="_earth" :key="sceneKey" />
+
     <div class="tree-box">
       <tree
         v-model:selectedKeys="selectedKeys"
@@ -36,6 +13,7 @@
         checkable
         :height="500"
         :tree-data="treeData"
+        @select="renderPin"
       >
         <template #title="{ title, key }">
           <span v-if="key === '0-0-1-0'" style="color: #1890ff">{{ title }}</span>
@@ -49,10 +27,11 @@
 <script>
 import { Tree } from 'ant-design-vue'
 import { defineComponent, ref, watch } from 'vue'
-import pinModal from './pinModal'
+import pinModal from '../components/pin//pinModal'
 
-import menuNav from './nav.vue'
-import GeoArea from './geoArea.vue'
+import menuNav from '../components/nav.vue'
+import geoAreaPlot from '../components/area/geoAreaPlot.vue'
+import pinPlot from '../components/pin/pinPlot.vue'
 function dig(path = '0', level = 3) {
   const list = []
 
@@ -91,82 +70,28 @@ export default defineComponent({
   data() {
     return {
       _earth: undefined, // 注意：Earth和Cesium的相关变量放在vue中，必须使用下划线作为前缀！
-      creating: false,
-      // 是否处于编辑状态
-      // 设置为true以后，将进入重新创建的状态；此时可以使用鼠标左键在三维窗口中选取需要修改路径的关键点，当点击鼠标右键，则表示编辑完成。此时该属性会自动变成false。
-      editing: false,
-      position: [0, 0, 0],
-      open: false,
-      areaKey: 0,
+      sceneKey: 0,
       areaType: undefined,
-      isPlotArea: false
+      isPlotArea: false,
+      isPlotPin: false
     }
   },
   components: {
     Tree,
     pinModal,
     menuNav,
-    GeoArea
+    geoAreaPlot,
+    pinPlot
   },
   methods: {
+    renderPin() {
+      this.sceneKey = this.sceneKey + 1
+      this.isPlotPin = true
+    },
     renderArea(type) {
-      console.log(type, '==renderArea')
-      this.areaKey = this.areaKey + 1
+      this.sceneKey = this.sceneKey + 1
       this.areaType = type
       this.isPlotArea = true
-    },
-    numFilter(value) {
-      // 截取当前数据到小数点后两位
-      let realVal = parseFloat(value).toFixed(2)
-      return realVal
-    },
-    numFilter2(value) {
-      // 截取当前数据到小数点后五位
-      let realVal = parseFloat(value).toFixed(5)
-      return realVal
-    },
-    unbind() {
-      this._creatingUnbind = this._creatingUnbind && this._creatingUnbind()
-      this._editingUnbind = this._editingUnbind && this._editingUnbind()
-      this._positionUnbind = this._positionUnbind && this._positionUnbind()
-    },
-    renderPoint(id) {
-      this.unbind()
-
-      const czmObject = {
-        ref: id,
-        czmObject: {
-          name: id,
-          xbsjType: 'Pin',
-          near: 100
-          // position: [1.9016974701882112, 0.5972325152147303, 425.8641913624607],
-        }
-      }
-      this._earth.sceneTree.root.children.push(czmObject)
-      console.log(this._earth.sceneTree.root.children, '===this._earth.sceneTree.root.children===')
-      let pin = this._earth.sceneTree.$refs[id].czmObject
-      // 1.1.5 数据绑定
-      this._creatingUnbind = XE.MVVM.bind(this, 'creating', pin, 'creating')
-      this._editingUnbind = XE.MVVM.bind(this, 'editing', pin, 'editing')
-      this._positionUnbind = XE.MVVM.bindPosition(this, 'position', pin, 'position')
-      XE.MVVM.watch(pin.position, () => {
-        console.log('positions发生变化！')
-      })
-      XE.MVVM.watch(pin, 'creating', () => {
-        console.log('creating发生变化：' + this.creating, pin.position, pin)
-        if (!this.creating) {
-          this.open = true
-        }
-      })
-      this.creating = !this.creating
-
-      // 设置初始值
-      // pin.position = [
-      //   1.9016974701882112,
-      //   0.5972325152147303,
-      //   425.8641913624607,
-      // ];
-      // window.pin = pin;
     },
     init() {
       // 1.1.1 创建地球
@@ -197,12 +122,9 @@ export default defineComponent({
           }
         ]
       }
-
-      var tileset = earth.sceneTree.$refs.tileset.czmObject
-
+      let tileset = earth.sceneTree.$refs.tileset.czmObject
       // 飞入大雁塔
       tileset.flyTo()
-
       this._earth = earth
 
       // only for Debug
@@ -210,14 +132,6 @@ export default defineComponent({
 
       window.tileset = tileset
     },
-    colorchange(event) {
-      var color = event.target.value
-      this.circle.color = color.xeColor
-    },
-    outlineColorchange(event) {
-      var outlineColor = event.target.value
-      this.circle.outlineColor = outlineColor.xeColor
-    }
   },
   mounted() {
     this.init()
@@ -225,7 +139,6 @@ export default defineComponent({
 
   beforeUnmount() {
     // vue程序销毁时，需要清理相关资源
-    this.unbind()
     this._earth = this._earth && this._earth.destroy()
   }
 })

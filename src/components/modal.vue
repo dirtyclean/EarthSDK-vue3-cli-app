@@ -1,11 +1,13 @@
 <template>
-  <div class="modal-box" :style="style" v-if="open">
-    <CloseOutlined class="modal-close" @click="closeModal" />
-    <div class="modal-title">{{ title }}</div>
-    <div class="modal-content">
-      <slot />
+  <!-- <div v-if="open" class="modal-mask"> -->
+    <div class="modal-box" :style="style" v-if="open">
+      <CloseOutlined class="modal-close" @click="closeModal" />
+      <div class="modal-title">{{ title }}</div>
+      <div class="modal-content">
+        <slot />
+      </div>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 <script>
 import { defineComponent, nextTick } from 'vue'
@@ -52,17 +54,25 @@ export default defineComponent({
       }
     }
   },
-  mounted() {console.log('Modal')}
+  mounted() {
+    console.log('Modal')
+  }
 })
 </script>
 <style scoped lang="scss">
+.modal-mask {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
 .modal-box {
   position: absolute;
   right: 18px;
   top: 300px;
   background: rgba(0, 0, 0, 0.6);
   border-radius: 10px;
-  z-index: 1;
+  z-index: 9999;
   .modal-title {
     padding: 10px;
     color: #fff;

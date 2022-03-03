@@ -92,7 +92,7 @@
 </template>
 <script>
 import { Form, Input, Button, Row, Col, Checkbox } from 'ant-design-vue'
-import modal from './modal'
+import modal from '../modal'
 import { defineComponent, reactive } from 'vue'
 import { useVModel } from '@/utils/useVModel.js'
 const { TextArea } = Input

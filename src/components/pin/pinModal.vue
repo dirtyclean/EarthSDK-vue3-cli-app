@@ -1,5 +1,5 @@
 <template>
-  <modal :title="title" :style="{ width: '600px' }" :open="open">
+  <modal :title="title" :style="{ width: '600px' }" @closeModal="closeModal" :open="open">
     <a-form
       :model="formState"
       name="basic"
@@ -24,7 +24,7 @@
             name="position[0]"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 12 }"
-            :rules="[{ required: true, message: '请输入位置信息!' }]"
+            :rules="[{ required: true, message: '经度!' }]"
           >
             <a-input v-model:value="formState.position[0]" placeholder="" />
           </a-form-item>
@@ -35,7 +35,7 @@
             name="position[1]"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 12 }"
-            :rules="[{ required: true, message: '请输入位置信息!' }]"
+            :rules="[{ required: true, message: '纬度!' }]"
           >
             <a-input v-model:value="formState.position[1]" placeholder="" />
           </a-form-item>
@@ -46,7 +46,7 @@
             name="position[2]"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 12 }"
-            :rules="[{ required: true, message: '请输入位置信息!' }]"
+            :rules="[{ required: true, message: '高度!' }]"
           >
             <a-input v-model:value="formState.position[2]" placeholder="" />
           </a-form-item>
@@ -72,8 +72,9 @@
 </template>
 <script>
 import { Form, Input, Button, Row, Col } from 'ant-design-vue'
-import modal from './modal'
+import modal from '../modal'
 import { defineComponent, reactive } from 'vue'
+import { useVModel } from '@/utils/useVModel.js'
 const { TextArea } = Input
 export default defineComponent({
   components: {
@@ -86,6 +87,7 @@ export default defineComponent({
     ACol: Col,
     modal
   },
+  emits: ['update:creating', 'update:editing', 'update:position'],
   props: {
     open: {
       type: Boolean,
@@ -94,13 +96,27 @@ export default defineComponent({
     },
     title: {
       type: String,
-      default: '点',
+      default: '点'
+    },
+    creating: {
+      type: Boolean,
+      default: false
+    },
+    editing: {
+      type: Boolean,
+      default: false
+    },
+    position: {
+      type: Array,
+      default: () => [0, 0, 0]
     }
   },
-  setup() {
+  setup(props, context) {
     const formState = reactive({
       name: '',
-      position: [],
+      creating: useVModel(props, 'creating'), // 创建
+      editing: useVModel(props, 'editing'), // 编辑
+      position: useVModel(props, 'position'),
       content: ''
     })
 
@@ -111,18 +127,28 @@ export default defineComponent({
     const onFinishFailed = (errorInfo) => {
       console.log('Failed:', errorInfo)
     }
-    const closeModal = () =>{
-      console.log('closeModal')
+    const closeModal = () => {
+      context.emit('update:open', false)
+    }
+    const numFilter = (value) => {
+      // 截取当前数据到小数点后两位
+      let realVal = parseFloat(value).toFixed(2)
+      return realVal
+    }
+    const numFilter2 = (value) => {
+      // 截取当前数据到小数点后五位
+      let realVal = parseFloat(value).toFixed(5)
+      return realVal
     }
     return {
       formState,
       onFinish,
       onFinishFailed,
-      closeModal
+      closeModal,
+      numFilter,
+      numFilter2
     }
   }
 })
 </script>
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

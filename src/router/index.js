@@ -1,36 +1,29 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 export const routes = [
     {
-        path: '/',
-        component: async () => await import('@/components/demo.vue'),
-        meta: {
-            title: '首页'
-        }
-    },
-    {
         path: '/earthComp',
-        component: async () => await import('@/components/EarthComp.vue'),
+        component: async () => await import('@/views/earthComp.vue'),
         meta: {
             title: 'earthComp'
         }
     },
     {
         path: '/shader',
-        component: async () => await import('@/components/shader.vue'),
+        component: async () => await import('@/views/shader.vue'),
         meta: {
             title: 'shader'
         }
     },
     {
         path: '/XbsjEarthUI',
-        component: async () => await import('@/components/XbsjEarthUI.vue'),
+        component: async () => await import('@/views/xbsjEarthUI.vue'),
         meta: {
             title: 'XbsjEarthUI'
         }
     },
     {
         path: '/plotTools',
-        component: async () => await import('@/components/plotTools.vue'),
+        component: async () => await import('@/views/plotTools.vue'),
         meta: {
             title: 'plotTools'
         }

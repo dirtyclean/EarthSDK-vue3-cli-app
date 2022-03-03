@@ -56,7 +56,6 @@ const navData = reactive([
 ])
 
 const handleItem = (type) =>{
-  console.log(type)
   currentType.value = type
   emit('renderArea', type)
 }
