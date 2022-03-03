@@ -1,10 +1,5 @@
 <template>
-  <pinModal
-    v-model:open="open"
-    v-model:creating="creating"
-    v-model:editing="editing"
-    v-model:position="position"
-  />
+  <pinModal v-model:open="open" v-model:creating="creating" v-model:editing="editing" v-model:position="position" />
 </template>
 
 <script>
@@ -22,7 +17,7 @@ export default {
   props: {
     _earth: {
       required: true
-    },
+    }
   },
   components: {
     pinModal
@@ -42,12 +37,12 @@ export default {
           name: id,
           xbsjType: 'Pin',
           near: 100,
-          position: [],
+          position: []
         }
       }
       const earth = this._earth // 利用浅拷贝
       earth.sceneTree.root.children.push(czmObject)
-      let pin = earth.sceneTree.$refs[id].czmObject
+      const pin = earth.sceneTree.$refs[id].czmObject
       // 1.1.5 数据绑定
       this._creatingUnbind = XE.MVVM.bind(this, 'creating', pin, 'creating')
       this._editingUnbind = XE.MVVM.bind(this, 'editing', pin, 'editing')
@@ -61,9 +56,13 @@ export default {
           this.open = true
         }
       })
+      pin.onclick = () => {
+        console.log('点的点击事件！')
+        this.open = true
+      }
       this.creating = !this.creating
 
-      window.pin = pin;
+      window.pin = pin
     },
     unbind() {
       this._creatingUnbind = this._creatingUnbind && this._creatingUnbind()

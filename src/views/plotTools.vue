@@ -2,8 +2,8 @@
   <div style="width: 100%; height: 100%">
     <div ref="earthContainer" style="width: 100%; height: 100%"></div>
     <menu-nav @renderArea="renderArea" />
-    <geo-area-plot v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="sceneKey" />
-    <pin-plot v-if="isPlotPin" :_earth="_earth" :key="sceneKey" />
+    <geo-area-plot v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="sceneAreaKey" />
+    <pin-plot v-if="isPlotPin" :_earth="_earth" :key="scenePinKey" />
 
     <div class="tree-box">
       <tree
@@ -70,7 +70,8 @@ export default defineComponent({
   data() {
     return {
       _earth: undefined, // 注意：Earth和Cesium的相关变量放在vue中，必须使用下划线作为前缀！
-      sceneKey: 0,
+      scenePinKey: 0,
+      sceneAreaKey: 0,
       areaType: undefined,
       isPlotArea: false,
       isPlotPin: false
@@ -85,11 +86,11 @@ export default defineComponent({
   },
   methods: {
     renderPin() {
-      this.sceneKey = this.sceneKey + 1
+      this.scenePinKey = this.scenePinKey + 1
       this.isPlotPin = true
     },
     renderArea(type) {
-      this.sceneKey = this.sceneKey + 1
+      this.sceneAreaKey = this.sceneAreaKey + 1
       this.areaType = type
       this.isPlotArea = true
     },
@@ -122,7 +123,7 @@ export default defineComponent({
           }
         ]
       }
-      let tileset = earth.sceneTree.$refs.tileset.czmObject
+      const tileset = earth.sceneTree.$refs.tileset.czmObject
       // 飞入大雁塔
       tileset.flyTo()
       this._earth = earth
@@ -131,7 +132,7 @@ export default defineComponent({
       window.earth = earth
 
       window.tileset = tileset
-    },
+    }
   },
   mounted() {
     this.init()

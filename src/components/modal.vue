@@ -1,12 +1,12 @@
 <template>
   <!-- <div v-if="open" class="modal-mask"> -->
-    <div class="modal-box" :style="style" v-if="open">
-      <CloseOutlined class="modal-close" @click="closeModal" />
-      <div class="modal-title">{{ title }}</div>
-      <div class="modal-content">
-        <slot />
-      </div>
+  <div class="modal-box" :style="style" v-if="open">
+    <CloseOutlined class="modal-close" @click="closeModal" />
+    <div class="modal-title">{{ title }}</div>
+    <div class="modal-content">
+      <slot />
     </div>
+  </div>
   <!-- </div> -->
 </template>
 <script>
@@ -114,5 +114,37 @@ export default defineComponent({
 }
 /deep/ .ant-checkbox-wrapper {
   color: #fff;
+}
+/deep/ .ant-form-item-control-input-content {
+  display: flex;
+  align-items: center;
+}
+/deep/.update-btn {
+  display: flex;
+  justify-content: left;
+  .defultbtn {
+    display: inline-block;
+    text-align: center;
+    min-width: 60px;
+    height: 38px;
+    padding: 0 10px;
+    line-height: 38px;
+    border-radius: 100px;
+    border: 1px solid #c9c9c9;
+    background-color: #fff;
+    color: #555;
+    cursor: pointer;
+    margin-bottom: 4px;
+  }
+
+  .defultbtn:hover {
+    background-color: #b3daf8;
+  }
+
+  .btnon {
+    background-color: #1e9fff;
+    color: #fff;
+    border: 1px solid #1e9fff;
+  }
 }
 </style>

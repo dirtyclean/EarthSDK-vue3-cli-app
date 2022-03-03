@@ -20,11 +20,11 @@ export default {
       open: false,
       creating: false, // 创建
       editing: false, // 编辑
-      outlineShow: true, //边框显示
+      outlineShow: true, // 边框显示
       ground: true, // 贴地
       outlineWidth: 5, // 宽度
       colors: [0, 0, 0, 0],
-      _circle: undefined
+      _area: undefined
     }
   },
   props: {
@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     colorChange(color, type) {
-      this._circle[type] = color
+      this._area[type] = color
     },
     renderArea(id = generator.randomNum) {
       this.unbind()
@@ -58,25 +58,29 @@ export default {
       }
       const earth = this._earth
       earth.sceneTree.root.children.push(czmObject)
-      let circle = earth.sceneTree.$refs[id].czmObject
+      const area = earth.sceneTree.$refs[id].czmObject
       // 1.1.5 数据绑定
-      this._creatingUnbind = XE.MVVM.bind(this, 'creating', circle, 'creating')
-      this._editingUnbind = XE.MVVM.bind(this, 'editing', circle, 'editing')
-      this._outlineShowUnbind = XE.MVVM.bind(this, 'outlineShow', circle, 'outlineShow')
-      this._groundUnbind = XE.MVVM.bind(this, 'ground', circle, 'ground')
-      this._outlineWidthUnbind = XE.MVVM.bind(this, 'outlineWidth', circle, 'outlineWidth')
-      this._colorsUnbind = XE.MVVM.bind(this, 'colors', circle, 'color')
-      XE.MVVM.watch(circle, 'creating', () => {
+      this._creatingUnbind = XE.MVVM.bind(this, 'creating', area, 'creating')
+      this._editingUnbind = XE.MVVM.bind(this, 'editing', area, 'editing')
+      this._outlineShowUnbind = XE.MVVM.bind(this, 'outlineShow', area, 'outlineShow')
+      this._groundUnbind = XE.MVVM.bind(this, 'ground', area, 'ground')
+      this._outlineWidthUnbind = XE.MVVM.bind(this, 'outlineWidth', area, 'outlineWidth')
+      this._colorsUnbind = XE.MVVM.bind(this, 'colors', area, 'color')
+      XE.MVVM.watch(area, 'creating', () => {
         console.log('creating发生变化：' + this.creating)
         if (!this.creating) {
           this.open = true
           console.log('打开面板')
         }
       })
+      area.onclick = () => {
+        console.log('区域的点击事件！')
+        this.open = true
+      }
       this.creating = !this.creating
-      this._circle = circle
+      this._area = area
       // only for Debug
-      window.circle = circle
+      window.area = area
     },
     unbind() {
       this._creatingUnbind = this._creatingUnbind && this._creatingUnbind()

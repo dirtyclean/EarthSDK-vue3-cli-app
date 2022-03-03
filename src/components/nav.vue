@@ -5,7 +5,7 @@
         <span>{{ name }}</span>
         <ul>
           <li @click="handleItem(type)" v-for="({ name, type }, index) in children" :key="index">
-            <span :class="{'type-actived': type === currentType}">{{ name }}</span>
+            <span :class="{ 'type-actived': type === currentType }">{{ name }}</span>
           </li>
         </ul>
       </li>
@@ -15,8 +15,7 @@
 <script setup>
 import { nextTick, reactive, ref } from 'vue'
 const emit = defineEmits(['renderArea'])
-  nextTick(() => {
-})
+nextTick(() => {})
 const currentType = ref()
 const navData = reactive([
   {
@@ -50,12 +49,12 @@ const navData = reactive([
       {
         name: '其他2',
         type: 'circle'
-      },
+      }
     ]
   }
 ])
 
-const handleItem = (type) =>{
+const handleItem = (type) => {
   currentType.value = type
   emit('renderArea', type)
 }
@@ -105,7 +104,8 @@ li {
           > span {
             padding: 10px;
           }
-          > span:hover, .type-actived {
+          > span:hover,
+          .type-actived {
             color: cyan;
           }
         }

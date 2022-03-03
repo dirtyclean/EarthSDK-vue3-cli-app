@@ -156,11 +156,11 @@ export default defineComponent({
   },
   methods: {
     fillColorChange(event) {
-      let color = event.target.value
+      const color = event.target.value
       this.$emit('colorChange', color.xeColor, 'color')
     },
     outlineColorChange(event) {
-      let outlineColor = event.target.value
+      const outlineColor = event.target.value
       this.$emit('colorChange', outlineColor.xeColor, 'outlineColor')
     }
   },
@@ -168,7 +168,7 @@ export default defineComponent({
     const formState = reactive({
       creating: useVModel(props, 'creating'), // 创建
       editing: useVModel(props, 'editing'), // 编辑
-      outlineShow: useVModel(props, 'outlineShow'), //边框显示
+      outlineShow: useVModel(props, 'outlineShow'), // 边框显示
       ground: useVModel(props, 'ground'), // 贴地
       outlineWidth: useVModel(props, 'outlineWidth'), // 宽度
       colors: useVModel(props, 'colors')
@@ -200,38 +200,6 @@ export default defineComponent({
   }
   span {
     color: #fff;
-  }
-}
-/deep/ .ant-form-item-control-input-content {
-  display: flex;
-  align-items: center;
-}
-.update-btn {
-  display: flex;
-  justify-content: left;
-  .defultbtn {
-    display: inline-block;
-    text-align: center;
-    min-width: 60px;
-    height: 38px;
-    padding: 0 10px;
-    line-height: 38px;
-    border-radius: 100px;
-    border: 1px solid #c9c9c9;
-    background-color: #fff;
-    color: #555;
-    cursor: pointer;
-    margin-bottom: 4px;
-  }
-
-  .defultbtn:hover {
-    background-color: #b3daf8;
-  }
-
-  .btnon {
-    background-color: #1e9fff;
-    color: #fff;
-    border: 1px solid #1e9fff;
   }
 }
 </style>

@@ -15,6 +15,19 @@
           <a-form-item label="名称" name="name" :rules="[{ required: true, message: '请输入名称!' }]">
             <a-input v-model:value="formState.name" placeholder="请输入名称" />
           </a-form-item>
+          <a-form-item label=" " class="update-btn">
+            <div class="defultbtn" :class="{ btnon: creating }" @click="formState.creating = !formState.creating">
+              鼠标点选
+            </div>
+            <div
+              class="defultbtn"
+              style="margin-left: 20px"
+              :class="{ btnon: editing }"
+              @click="formState.editing = !formState.editing"
+            >
+              编辑
+            </div>
+          </a-form-item>
         </a-col>
       </a-row>
       <a-row :gutter="10">
@@ -23,10 +36,10 @@
             label="位置"
             name="position[0]"
             :label-col="{ span: 6 }"
-            :wrapper-col="{ span: 12 }"
+            :wrapper-col="{ span: 14 }"
             :rules="[{ required: true, message: '经度!' }]"
           >
-            <a-input v-model:value="formState.position[0]" placeholder="" />
+            <a-input placeholder="经度" v-model:value="formState.position[0]" />
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -34,10 +47,10 @@
             label=" "
             name="position[1]"
             :label-col="{ span: 6 }"
-            :wrapper-col="{ span: 12 }"
+            :wrapper-col="{ span: 14 }"
             :rules="[{ required: true, message: '纬度!' }]"
           >
-            <a-input v-model:value="formState.position[1]" placeholder="" />
+            <a-input placeholder="纬度" v-model:value="formState.position[1]" />
           </a-form-item>
         </a-col>
         <a-col :span="8">
@@ -45,10 +58,10 @@
             label=" "
             name="position[2]"
             :label-col="{ span: 6 }"
-            :wrapper-col="{ span: 12 }"
+            :wrapper-col="{ span: 14 }"
             :rules="[{ required: true, message: '高度!' }]"
           >
-            <a-input v-model:value="formState.position[2]" placeholder="" />
+            <a-input placeholder="高度" v-model:value="formState.position[2]" />
           </a-form-item>
         </a-col>
       </a-row>
@@ -132,12 +145,12 @@ export default defineComponent({
     }
     const numFilter = (value) => {
       // 截取当前数据到小数点后两位
-      let realVal = parseFloat(value).toFixed(2)
+      const realVal = parseFloat(value).toFixed(2)
       return realVal
     }
     const numFilter2 = (value) => {
       // 截取当前数据到小数点后五位
-      let realVal = parseFloat(value).toFixed(5)
+      const realVal = parseFloat(value).toFixed(5)
       return realVal
     }
     return {
