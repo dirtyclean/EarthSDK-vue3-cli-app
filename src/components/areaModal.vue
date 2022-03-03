@@ -15,9 +15,16 @@
           <a-form-item label="名称" name="name" :rules="[{ required: true, message: '请输入名称!' }]">
             <a-input v-model:value="formState.name" placeholder="请输入名称" />
           </a-form-item>
-          <a-form-item  label=" " class="update-btn">
-            <div class="defultbtn" :class="{ btnon: creating }" @click="creating = !creating">创建</div>
-            <div class="defultbtn" style="margin-left: 20px" :class="{ btnon: editing }" @click="editing = !editing">
+          <a-form-item label=" " class="update-btn">
+            <div class="defultbtn" :class="{ btnon: creating }" @click="formState.creating = !formState.creating">
+              创建
+            </div>
+            <div
+              class="defultbtn"
+              style="margin-left: 20px"
+              :class="{ btnon: editing }"
+              @click="formState.editing = !formState.editing"
+            >
               编辑
             </div>
           </a-form-item>
@@ -46,7 +53,7 @@
       <a-row :gutter="10">
         <a-col :span="24">
           <a-form-item label="填充颜色" name="content">
-            <input class="colorbox" type="color" value="#00ff40" @input="colorchange(event)" />
+            <input class="colorbox" type="color" value="#00ff40" @input="fillColorChange" />
           </a-form-item>
         </a-col>
       </a-row>
@@ -61,7 +68,7 @@
       <a-row :gutter="10">
         <a-col :span="24">
           <a-form-item label="边框颜色" name="colors[3]">
-            <input class="colorbox" type="color" value="#00ff40" @input="outlineColorchange(event)" />
+            <input class="colorbox" type="color" value="#00ff40" @input="outlineColorChange" />
           </a-form-item>
         </a-col>
       </a-row>
@@ -87,6 +94,7 @@
 import { Form, Input, Button, Row, Col, Checkbox } from 'ant-design-vue'
 import modal from './modal'
 import { defineComponent, reactive } from 'vue'
+import { useVModel } from '@/utils/useVModel.js'
 const { TextArea } = Input
 export default defineComponent({
   components: {
@@ -100,6 +108,14 @@ export default defineComponent({
     modal,
     ACheckbox: Checkbox
   },
+  emits: [
+    'update:creating',
+    'update:editing',
+    'update:outlineShow',
+    'update:ground',
+    'update:outlineWidth',
+    'update:colors'
+  ],
   props: {
     open: {
       type: Boolean,
@@ -109,26 +125,54 @@ export default defineComponent({
     title: {
       type: String,
       default: '区域'
+    },
+    creating: {
+      type: Boolean,
+      default: false
+    },
+    editing: {
+      type: Boolean,
+      default: false
+    },
+    outlineShow: {
+      type: Boolean,
+      default: true
+    },
+    ground: {
+      type: Boolean,
+      default: true
+    },
+    outlineWidth: {
+      type: Number,
+      default: 5
+    },
+    colors: {
+      type: Array,
+      default: () => [0, 0, 0, 0]
     }
   },
+  mounted() {
+    console.log('areaModal')
+  },
   methods: {
-    colorchange(event) {
-      var color = event.target.value
-      // circle.color = color.xeColor
+    fillColorChange(event) {
+      let color = event.target.value
+      this.$emit('colorChange', color.xeColor, 'color')
     },
-    outlineColorchange(event) {
-      var outlineColor = event.target.value
-      // circle.outlineColor = outlineColor.xeColor
+    outlineColorChange(event) {
+      let outlineColor = event.target.value
+      this.$emit('colorChange', outlineColor.xeColor, 'outlineColor')
     }
   },
   setup(props, context) {
     const formState = reactive({
-      outlineShow: true, //边框显示
-      ground: true, // 贴地
-      outlineWidth: 5, // 宽度
-      colors: [0, 0, 0, 0]
+      creating: useVModel(props, 'creating'), // 创建
+      editing: useVModel(props, 'editing'), // 编辑
+      outlineShow: useVModel(props, 'outlineShow'), //边框显示
+      ground: useVModel(props, 'ground'), // 贴地
+      outlineWidth: useVModel(props, 'outlineWidth'), // 宽度
+      colors: useVModel(props, 'colors')
     })
-
     const onFinish = (values) => {
       console.log('Success:', values)
     }
@@ -164,7 +208,7 @@ export default defineComponent({
 }
 .update-btn {
   display: flex;
-  justify-content: left; 
+  justify-content: left;
   .defultbtn {
     display: inline-block;
     text-align: center;

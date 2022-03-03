@@ -40,6 +40,7 @@ export default defineComponent({
   },
   watch: {
     open(open) {
+      console.log('监听open---', open)
       if (open) {
         nextTick(() => {
           new Draggabilly(document.querySelector('.modal-box'), {
@@ -51,7 +52,7 @@ export default defineComponent({
       }
     }
   },
-  mounted() {}
+  mounted() {console.log('Modal')}
 })
 </script>
 <style scoped lang="scss">
@@ -61,6 +62,7 @@ export default defineComponent({
   top: 300px;
   background: rgba(0, 0, 0, 0.6);
   border-radius: 10px;
+  z-index: 1;
   .modal-title {
     padding: 10px;
     color: #fff;

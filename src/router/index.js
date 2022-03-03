@@ -34,7 +34,7 @@ export const routes = [
         meta: {
             title: 'plotTools'
         }
-    }
+    },
 ]
 
 export const router = createRouter({

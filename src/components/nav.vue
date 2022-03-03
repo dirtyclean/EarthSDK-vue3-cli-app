@@ -32,7 +32,7 @@ const navData = reactive([
       },
       {
         name: '多边形',
-        type: 'Polygon'
+        type: 'GeoPolygon'
       },
       {
         name: '平滑多边形',

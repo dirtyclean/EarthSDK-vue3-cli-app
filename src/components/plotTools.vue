@@ -1,6 +1,7 @@
 <template>
   <div style="width: 100%; height: 100%">
-    <menu-nav @renderArea="renderArea"/>
+    <menu-nav @renderArea="renderArea" />
+    <GeoArea v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="areaKey" />
     <div ref="earthContainer" style="width: 100%; height: 100%"></div>
     <div
       class="box"
@@ -42,15 +43,16 @@
         </template>
       </tree>
     </div>
-    <div><areaModal v-model:open="open"  /></div>
+    <pinModal v-model:open="open" />
   </div>
 </template>
 <script>
 import { Tree } from 'ant-design-vue'
 import { defineComponent, ref, watch } from 'vue'
 import pinModal from './pinModal'
-import areaModal from './areaModal'
+
 import menuNav from './nav.vue'
+import GeoArea from './geoArea.vue'
 function dig(path = '0', level = 3) {
   const list = []
 
@@ -94,18 +96,24 @@ export default defineComponent({
       // 设置为true以后，将进入重新创建的状态；此时可以使用鼠标左键在三维窗口中选取需要修改路径的关键点，当点击鼠标右键，则表示编辑完成。此时该属性会自动变成false。
       editing: false,
       position: [0, 0, 0],
-      open: false
+      open: false,
+      areaKey: 0,
+      areaType: undefined,
+      isPlotArea: false
     }
   },
   components: {
     Tree,
     pinModal,
-    areaModal,
-    menuNav
+    menuNav,
+    GeoArea
   },
   methods: {
     renderArea(type) {
       console.log(type, '==renderArea')
+      this.areaKey = this.areaKey + 1
+      this.areaType = type
+      this.isPlotArea = true
     },
     numFilter(value) {
       // 截取当前数据到小数点后两位
@@ -136,7 +144,7 @@ export default defineComponent({
       }
       this._earth.sceneTree.root.children.push(czmObject)
       console.log(this._earth.sceneTree.root.children, '===this._earth.sceneTree.root.children===')
-      var pin = this._earth.sceneTree.$refs[id].czmObject
+      let pin = this._earth.sceneTree.$refs[id].czmObject
       // 1.1.5 数据绑定
       this._creatingUnbind = XE.MVVM.bind(this, 'creating', pin, 'creating')
       this._editingUnbind = XE.MVVM.bind(this, 'editing', pin, 'editing')
@@ -212,16 +220,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    // XE.ready()
-    //   .then(() => {
-    //     // 加载标绘插件
-    //     return XE.HTML.loadJS(
-    //       "/XbsjEarth-Plugins/plottingSymbol/plottingSymbol.js",
-    //     );
-    //   })
-    //   .then(() => {
     this.init()
-    // });
   },
 
   beforeUnmount() {
