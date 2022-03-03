@@ -2,96 +2,48 @@
   <div style="width: 100%; height: 100%">
     <div ref="earthContainer" style="width: 100%; height: 100%"></div>
     <menu-nav @renderArea="renderArea" />
-    <geo-area-plot v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="sceneAreaKey" />
+    <geo-area-plot :title="areaName" v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="sceneAreaKey" />
     <pin-plot v-if="isPlotPin" :_earth="_earth" :key="scenePinKey" />
-
-    <div class="tree-box">
-      <tree
-        v-model:selectedKeys="selectedKeys"
-        v-model:checkedKeys="checkedKeys"
-        default-expand-all
-        checkable
-        :height="500"
-        :tree-data="treeData"
-        @select="renderPin"
-      >
-        <template #title="{ title, key }">
-          <span v-if="key === '0-0-1-0'" style="color: #1890ff">{{ title }}</span>
-          <template v-else>{{ title }}</template>
-        </template>
-      </tree>
-    </div>
+    <pinTree />
     <pinModal v-model:open="open" />
   </div>
 </template>
 <script>
-import { Tree } from 'ant-design-vue'
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent } from 'vue'
 import pinModal from '../components/pin//pinModal'
 
 import menuNav from '../components/nav.vue'
 import geoAreaPlot from '../components/area/geoAreaPlot.vue'
 import pinPlot from '../components/pin/pinPlot.vue'
-function dig(path = '0', level = 3) {
-  const list = []
-
-  for (let i = 0; i < 10; i += 1) {
-    const key = `${path}-${i}`
-    const treeNode = {
-      title: key,
-      key
-    }
-
-    if (level > 0) {
-      treeNode.children = dig(key, level - 1)
-    }
-
-    list.push(treeNode)
-  }
-
-  return list
-}
+import pinTree from '../components/pin/pinTree.vue'
 export default defineComponent({
-  setup() {
-    const selectedKeys = ref(['0-0-0', '0-0-1'])
-    const checkedKeys = ref(['0-0-0', '0-0-1'])
-    watch(selectedKeys, () => {
-      console.log('selectedKeys', selectedKeys)
-    })
-    watch(checkedKeys, () => {
-      console.log('checkedKeys', checkedKeys)
-    })
-    return {
-      treeData: dig(),
-      selectedKeys,
-      checkedKeys
-    }
-  },
   data() {
     return {
       _earth: undefined, // 注意：Earth和Cesium的相关变量放在vue中，必须使用下划线作为前缀！
       scenePinKey: 0,
       sceneAreaKey: 0,
       areaType: undefined,
+      areaName: undefined,
       isPlotArea: false,
       isPlotPin: false
     }
   },
   components: {
-    Tree,
     pinModal,
     menuNav,
     geoAreaPlot,
-    pinPlot
+    pinPlot,
+    pinTree
   },
   methods: {
     renderPin() {
       this.scenePinKey = this.scenePinKey + 1
       this.isPlotPin = true
     },
-    renderArea(type) {
+    renderArea(type, name) {
       this.sceneAreaKey = this.sceneAreaKey + 1
       this.areaType = type
+      this.areaName = name
       this.isPlotArea = true
     },
     init() {
@@ -145,30 +97,6 @@ export default defineComponent({
 })
 </script>
 <style scoped lang="scss">
-.tree-box {
-  position: absolute;
-  left: 18px;
-  top: 300px;
-  width: 294px;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 20px;
-  border-radius: 10px;
-  /deep/.ant-tree {
-    background: transparent;
-    color: #fff;
-  }
-  /deep/.ant-tree .ant-tree-node-content-wrapper:hover {
-    background-color: red;
-  }
-  /deep/ .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
-    background-color: green;
-  }
-}
-.box span {
-  display: block;
-  margin-top: 10px;
-}
-
 .defultbtn {
   display: inline-block;
   text-align: center;

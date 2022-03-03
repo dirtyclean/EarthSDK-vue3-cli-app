@@ -1,7 +1,7 @@
 <template>
   <!-- <div v-if="open" class="modal-mask"> -->
   <div class="modal-box" :style="style" v-if="open">
-    <CloseOutlined class="modal-close" @click="closeModal" />
+    <CloseOutlined v-if="showCloseIcon" class="modal-close" @click="closeModal" />
     <div class="modal-title">{{ title }}</div>
     <div class="modal-content">
       <slot />
@@ -29,6 +29,11 @@ export default defineComponent({
       type: Boolean,
       default: false,
       required: true
+    },
+    showCloseIcon: {
+      type: Boolean,
+      default: true,
+      required: false
     }
   },
   components: {
@@ -41,16 +46,19 @@ export default defineComponent({
     }
   },
   watch: {
-    open(open) {
-      console.log('监听open---', open)
-      if (open) {
-        nextTick(() => {
-          new Draggabilly(document.querySelector('.modal-box'), {
-            // 选项...
-            handle: '.modal-title',
-            containment: '#app'
+    open: {
+      immediate: true,
+      handler(open) {
+        console.log('监听open---', open)
+        if (open) {
+          nextTick(() => {
+            const draggabilly = new Draggabilly(document.querySelector('.modal-box'), {
+              // 选项...
+              handle: '.modal-title',
+              containment: '#app'
+            })
           })
-        })
+        }
       }
     }
   },
@@ -94,32 +102,32 @@ export default defineComponent({
     cursor: pointer;
   }
 }
-/deep/.ant-form-item-label > label {
+:deep(.ant-form-item-label > label) {
   color: #fff;
 }
-/deep/.ant-input {
+:deep(.ant-input) {
   background-color: rgba(0, 0, 0, 0.5);
   border: none;
   color: #fff;
   border-radius: 6px;
 }
-/deep/.ant-form-item-has-error :not(.ant-input-disabled):not(.ant-input-borderless).ant-input {
+:deep(.ant-form-item-has-error :not(.ant-input-disabled):not(.ant-input-borderless).ant-input) {
   background-color: rgba(0, 0, 0, 0.5);
   border: none;
   color: #fff;
   border-radius: 6px;
 }
-/deep/.ant-form-item-explain.ant-form-item-explain-error {
+:deep(.ant-form-item-explain.ant-form-item-explain-error) {
   text-align: left;
 }
-/deep/ .ant-checkbox-wrapper {
+:deep(.ant-checkbox-wrapper) {
   color: #fff;
 }
-/deep/ .ant-form-item-control-input-content {
+:deep(.ant-form-item-control-input-content) {
   display: flex;
   align-items: center;
 }
-/deep/.update-btn {
+:deep(.update-btn) {
   display: flex;
   justify-content: left;
   .defultbtn {

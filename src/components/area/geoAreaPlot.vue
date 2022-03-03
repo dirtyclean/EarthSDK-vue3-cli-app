@@ -8,6 +8,7 @@
     v-model:outlineWidth="outlineWidth"
     v-model:colors="colors"
     @colorChange="colorChange"
+    :title="areaName"
   />
 </template>
 
@@ -32,6 +33,10 @@ export default {
       required: true
     },
     areaType: {
+      type: String,
+      required: true
+    },
+    areaName: {
       type: String,
       required: true
     }

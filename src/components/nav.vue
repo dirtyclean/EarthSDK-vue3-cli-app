@@ -9,7 +9,7 @@
       >
         <span>{{ name }}</span>
         <ul :class="{ flex: name === currentMenu }">
-          <li @click="handleType(type)" v-for="({ name, type }, index) in children" :key="index">
+          <li @click="handleType(type, name)" v-for="({ name, type }, index) in children" :key="index">
             <span :class="{ 'type-actived': type === currentType }">{{ name }}</span>
           </li>
         </ul>
@@ -63,9 +63,9 @@ const handleMenu = name => {
   console.log('name', name)
   currentMenu.value = name
 }
-const handleType = type => {
+const handleType = (type, name) => {
   currentType.value = type
-  emit('renderArea', type)
+  emit('renderArea', type, name)
 }
 </script>
 <style scoped lang="scss">
