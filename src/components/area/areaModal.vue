@@ -173,11 +173,11 @@ export default defineComponent({
       outlineWidth: useVModel(props, 'outlineWidth'), // 宽度
       colors: useVModel(props, 'colors')
     })
-    const onFinish = (values) => {
+    const onFinish = values => {
       console.log('Success:', values)
     }
 
-    const onFinishFailed = (errorInfo) => {
+    const onFinishFailed = errorInfo => {
       console.log('Failed:', errorInfo)
     }
     const closeModal = () => {

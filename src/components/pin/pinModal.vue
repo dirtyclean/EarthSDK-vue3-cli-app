@@ -133,22 +133,22 @@ export default defineComponent({
       content: ''
     })
 
-    const onFinish = (values) => {
+    const onFinish = values => {
       console.log('Success:', values)
     }
 
-    const onFinishFailed = (errorInfo) => {
+    const onFinishFailed = errorInfo => {
       console.log('Failed:', errorInfo)
     }
     const closeModal = () => {
       context.emit('update:open', false)
     }
-    const numFilter = (value) => {
+    const numFilter = value => {
       // 截取当前数据到小数点后两位
       const realVal = parseFloat(value).toFixed(2)
       return realVal
     }
-    const numFilter2 = (value) => {
+    const numFilter2 = value => {
       // 截取当前数据到小数点后五位
       const realVal = parseFloat(value).toFixed(5)
       return realVal

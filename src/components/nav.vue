@@ -1,10 +1,15 @@
 <template>
   <div class="top">
     <ul>
-      <li v-for="({ name, children }, index) in navData" :key="index">
+      <li
+        :class="{ 'menu-actived': name === currentMenu }"
+        v-for="({ name, children }, index) in navData"
+        :key="index"
+        @click="handleMenu(name, $event)"
+      >
         <span>{{ name }}</span>
-        <ul>
-          <li @click="handleItem(type)" v-for="({ name, type }, index) in children" :key="index">
+        <ul :class="{ flex: name === currentMenu }">
+          <li @click="handleType(type)" v-for="({ name, type }, index) in children" :key="index">
             <span :class="{ 'type-actived': type === currentType }">{{ name }}</span>
           </li>
         </ul>
@@ -16,6 +21,7 @@
 import { nextTick, reactive, ref } from 'vue'
 const emit = defineEmits(['renderArea'])
 nextTick(() => {})
+const currentMenu = ref('标绘')
 const currentType = ref()
 const navData = reactive([
   {
@@ -53,8 +59,11 @@ const navData = reactive([
     ]
   }
 ])
-
-const handleItem = (type) => {
+const handleMenu = name => {
+  console.log('name', name)
+  currentMenu.value = name
+}
+const handleType = type => {
   currentType.value = type
   emit('renderArea', type)
 }
@@ -90,6 +99,7 @@ li {
       height: 40px;
       line-height: 40px;
       padding: 0 10px;
+
       ul {
         width: 100%;
         background: #6b6b6b;
@@ -113,14 +123,10 @@ li {
     }
   }
 }
-.top ul li:first-child {
+.flex {
+  display: flex !important;
+}
+.menu-actived {
   background-color: #6b6b6b;
-}
-.top ul li:first-child ul {
-  display: flex;
-}
-.top ul li:hover ul {
-  /* 鼠标选中二级菜单内容时 */
-  display: flex;
 }
 </style>

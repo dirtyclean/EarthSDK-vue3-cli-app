@@ -9,6 +9,6 @@ export const useVModel = (props, propName) => {
     },
     set(value) {
       vm.$emit(`update:${propName}`, value)
-    },
+    }
   })
 }
