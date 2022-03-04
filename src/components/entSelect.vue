@@ -49,4 +49,13 @@ const entTotal = ref(0)
   top: 20px;
   z-index: 9999;
 }
+:deep(.ant-select) {
+  border-radius: 6px;
+}
+:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector) {
+  background-color: rgba(71, 71, 71, 0.8);
+}
+:deep(.ant-select-selection-placeholder) {
+  color: #fff;
+}
 </style>
