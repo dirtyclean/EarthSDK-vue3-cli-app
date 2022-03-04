@@ -8,7 +8,8 @@
     v-model:outlineWidth="outlineWidth"
     v-model:color="color"
     v-model:outlineColor="outlineColor"
-    @colorChange="colorChange"
+    v-model:name="name"
+    v-model:content="content"
     :title="areaName"
     :defaultColor="defaultColor"
     :defaultOutlineColor="defaultOutlineColor"
@@ -39,7 +40,9 @@ export default {
       ...defaultConfig,
       _area: undefined,
       defaultColor,
-      defaultOutlineColor
+      defaultOutlineColor,
+      name: '',
+      content: ''
     }
   },
   props: {
@@ -74,6 +77,7 @@ export default {
         }
       }
       const earth = this._earth
+      // 利用浅拷贝 去添加场景
       earth.sceneTree.root.children.push(czmObject)
       const area = earth.sceneTree.$refs[id].czmObject
       // 1.1.5 数据绑定

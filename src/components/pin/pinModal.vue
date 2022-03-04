@@ -122,15 +122,23 @@ export default defineComponent({
     position: {
       type: Array,
       default: () => [0, 0, 0]
+    },
+    name: {
+      type: String,
+      default: ''
+    },
+    content: {
+      type: String,
+      default: ''
     }
   },
   setup(props, context) {
     const formState = reactive({
-      name: '',
       creating: useVModel(props, 'creating'), // 创建
       editing: useVModel(props, 'editing'), // 编辑
       position: useVModel(props, 'position'),
-      content: ''
+      name: useVModel(props, 'name'),
+      content: useVModel(props, 'content')
     })
 
     const onFinish = values => {

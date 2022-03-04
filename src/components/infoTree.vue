@@ -3,6 +3,7 @@
     <tree
       v-model:selectedKeys="selectedKeys"
       v-model:checkedKeys="checkedKeys"
+      :blockNode="false"
       default-expand-all
       checkable
       :height="500"
@@ -14,16 +15,27 @@
       }"
       @select="renderPin"
     >
-      <template #title="{ name }">
-        {{ name }}
+      <template #title="{ name, id }">
+        <a-dropdown
+          :trigger="['contextmenu']"
+          :overlayClassName="`plot-type-menu-${id}`"
+          :getPopupContainer="node => getPopupContainer(node, id)"
+        >
+          <span>{{ name }}</span>
+          <template #overlay>
+            <a-menu @click="({ key: menuKey }) => onContextMenuClick(menuKey)">
+              <a-menu-item v-for="{ name, type } in plotTypeData" :key="type">{{ name }}</a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
       </template>
     </tree>
   </modal>
 </template>
 <script>
 import { defineComponent, ref, watch } from 'vue'
-import { Tree } from 'ant-design-vue'
-import modal from '../modal'
+import { Tree, Dropdown, Menu } from 'ant-design-vue'
+import modal from './modal'
 const treeData = [
   {
     id: '0',
@@ -91,6 +103,28 @@ const treeData = [
     ]
   }
 ]
+const plotTypeData = [
+  {
+    name: '点',
+    type: 'Pin'
+  },
+  {
+    name: '圆',
+    type: 'GeoCircle'
+  },
+  {
+    name: '矩形',
+    type: 'GeoRectangle'
+  },
+  {
+    name: '多边形',
+    type: 'GeoPolygon'
+  },
+  {
+    name: '平滑多边形',
+    type: 'GeoSmoothPolygon'
+  }
+]
 export default defineComponent({
   setup(props, context) {
     const selectedKeys = ref(['0-0-0', '0-0-1'])
@@ -102,18 +136,47 @@ export default defineComponent({
       console.log('checkedKeys', checkedKeys)
     })
     const renderPin = () => {
-      context.emit('renderPin')
+      // context.emit('renderPin')
+    }
+    const onContextMenuClick = menuKey => {
+      console.log(menuKey)
+
+      if (menuKey === 'Pin') {
+        context.emit('renderPin')
+      } else {
+        context.emit('renderArea', menuKey, (plotTypeData.find(({ type }) => type === menuKey) || {}).name)
+      }
+    }
+    const getPopupContainer = (triggerNode, id) => {
+      // return triggerNode.parentNode
+      console.log('----getPopupContainer-----', triggerNode, id)
+      setTimeout(() => {
+        try {
+          const dropdown = document.getElementsByClassName(`plot-type-menu-${id}`)[0]
+          const parent = dropdown.parentNode.parentNode // 父节点
+          parent.style.zIndex = '999999'
+        } catch (e) {
+          console.log(e)
+        }
+      })
+      return document.body
     }
     return {
       treeData,
       selectedKeys,
       checkedKeys,
-      renderPin
+      plotTypeData,
+      renderPin,
+      onContextMenuClick,
+      getPopupContainer
     }
   },
   components: {
     Tree,
-    modal
+    modal,
+    ADropdown: Dropdown,
+    AMenu: Menu,
+    AMenuItem: Menu.Item
   }
 })
 </script>

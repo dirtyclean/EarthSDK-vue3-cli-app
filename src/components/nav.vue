@@ -19,7 +19,7 @@
 </template>
 <script setup>
 import { nextTick, reactive, ref } from 'vue'
-const emit = defineEmits(['renderArea'])
+const emit = defineEmits(['renderArea', 'renderPin'])
 nextTick(() => {})
 const currentMenu = ref('标绘')
 const currentType = ref()
@@ -27,6 +27,10 @@ const navData = reactive([
   {
     name: '标绘',
     children: [
+      {
+        name: '点',
+        type: 'Pin'
+      },
       {
         name: '圆',
         type: 'GeoCircle'
@@ -52,7 +56,12 @@ const handleMenu = name => {
 }
 const handleType = (type, name) => {
   currentType.value = type
-  emit('renderArea', type, name)
+  if(type === 'Pin') {
+    emit('renderPin', type, name)
+  } else {
+    emit('renderArea', type, name)
+  }
+  
 }
 </script>
 <style scoped lang="scss">

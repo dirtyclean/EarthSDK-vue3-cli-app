@@ -33,7 +33,7 @@
       <a-row :gutter="10">
         <a-col :span="12">
           <a-form-item label=" " name="outlineShow" :label-col="{ span: 8 }" :wrapper-col="{ span: 10 }">
-            <a-checkbox v-model:checked="formState.outlineShow">圆边框显隐</a-checkbox>
+            <a-checkbox v-model:checked="formState.outlineShow">边框显隐</a-checkbox>
           </a-form-item>
         </a-col>
         <a-col :span="12">
@@ -115,7 +115,9 @@ export default defineComponent({
     'update:ground',
     'update:outlineWidth',
     'update:color',
-    'update:outlineColor'
+    'update:outlineColor',
+    'update:name',
+    'update:content'
   ],
   props: {
     open: {
@@ -162,6 +164,14 @@ export default defineComponent({
     defaultOutlineColor: {
       type: String,
       default: ''
+    },
+    name: {
+      type: String,
+      default: ''
+    },
+    content: {
+      type: String,
+      default: ''
     }
   },
   mounted() {
@@ -186,8 +196,8 @@ export default defineComponent({
       outlineWidth: useVModel(props, 'outlineWidth'), // 宽度
       color: useVModel(props, 'color'),
       outlineColor: useVModel(props, 'outlineColor'),
-      name: '',
-      content: ''
+      name: useVModel(props, 'name'),
+      content: useVModel(props, 'content')
     })
     const onFinish = values => {
       const { creating, editing, outlineShow, ground, outlineWidth, color, outlineColor, name, content } = formState

@@ -1,5 +1,12 @@
 <template>
-  <pinModal v-model:open="open" v-model:creating="creating" v-model:editing="editing" v-model:position="position" />
+  <pinModal
+    v-model:open="open"
+    v-model:creating="creating"
+    v-model:editing="editing"
+    v-model:position="position"
+    v-model:name="name"
+    v-model:content="content"
+  />
 </template>
 
 <script>
@@ -14,7 +21,9 @@ export default {
   data() {
     return {
       open: false,
-      ...defaultConfig
+      ...defaultConfig,
+      name: '',
+      content: ''
     }
   },
   props: {
@@ -43,7 +52,8 @@ export default {
           ...defaultConfig
         }
       }
-      const earth = this._earth // 利用浅拷贝
+      const earth = this._earth
+      // 利用浅拷贝 去添加场景
       earth.sceneTree.root.children.push(czmObject)
       const pin = earth.sceneTree.$refs[id].czmObject
       // 1.1.5 数据绑定

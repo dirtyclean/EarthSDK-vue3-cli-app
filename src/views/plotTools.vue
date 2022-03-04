@@ -1,10 +1,10 @@
 <template>
   <div style="width: 100%; height: 100%">
     <div ref="earthContainer" style="width: 100%; height: 100%"></div>
-    <menu-nav @renderArea="renderArea" />
+    <info-tree @renderPin="renderPin" @renderArea="renderArea" />
+    <menu-nav @renderPin="renderPin" @renderArea="renderArea" />
     <geo-area-plot :title="areaName" v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="sceneAreaKey" />
     <pin-plot v-if="isPlotPin" :_earth="_earth" :key="scenePinKey" />
-    <pin-tree @renderPin="renderPin" />
     <pin-modal v-model:open="open" />
   </div>
 </template>
@@ -15,7 +15,7 @@ import pinModal from '../components/pin//pinModal'
 import menuNav from '../components/nav.vue'
 import geoAreaPlot from '../components/area/geoAreaPlot.vue'
 import pinPlot from '../components/pin/pinPlot.vue'
-import pinTree from '../components/pin/pinTree.vue'
+import infoTree from '../components/infoTree.vue'
 export default defineComponent({
   data() {
     return {
@@ -33,13 +33,17 @@ export default defineComponent({
     menuNav,
     geoAreaPlot,
     pinPlot,
-    pinTree
+    infoTree
   },
   methods: {
+    // 绘制多个点 就多次调用这个 通过更新key
+    // 如果想要多个点的弹窗同时出现 就用v-for生成组件 而不是用更新key
     renderPin() {
       this.scenePinKey = this.scenePinKey + 1
       this.isPlotPin = true
     },
+    // 绘制多个区域图形 就多次调用这个 通过更新key
+    // 如果想要多个区域图形的弹窗同时出现 就用v-for生成组件 而不是用更新key
     renderArea(type, name) {
       this.sceneAreaKey = this.sceneAreaKey + 1
       this.areaType = type
