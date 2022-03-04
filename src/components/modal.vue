@@ -85,12 +85,13 @@ export default defineComponent({
     padding: 10px;
     color: #fff;
     font-weight: 600;
-    border-bottom: 5px solid #000;
+    border-bottom: 4px solid rgba(0, 0, 0, 0.4);
     margin-bottom: 10px;
     cursor: move;
     font-size: 18px;
   }
   .modal-content {
+    margin: 0;
     padding: 20px;
   }
   .modal-close {

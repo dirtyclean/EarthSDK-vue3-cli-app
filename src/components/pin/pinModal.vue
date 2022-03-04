@@ -34,7 +34,7 @@
         <a-col :span="8">
           <a-form-item
             label="位置"
-            name="position[0]"
+            :name="['position', 0]"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 14 }"
             :rules="[{ required: true, message: '经度!' }]"
@@ -45,7 +45,7 @@
         <a-col :span="8">
           <a-form-item
             label=" "
-            name="position[1]"
+            :name="['position', 1]"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 14 }"
             :rules="[{ required: true, message: '纬度!' }]"
@@ -56,7 +56,7 @@
         <a-col :span="8">
           <a-form-item
             label=" "
-            name="position[2]"
+            :name="['position', 2]"
             :label-col="{ span: 6 }"
             :wrapper-col="{ span: 14 }"
             :rules="[{ required: true, message: '高度!' }]"

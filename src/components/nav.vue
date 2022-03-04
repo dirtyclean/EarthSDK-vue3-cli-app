@@ -45,19 +45,6 @@ const navData = reactive([
       }
     ]
   },
-  {
-    name: '其他',
-    children: [
-      {
-        name: '其他1',
-        type: 'circle'
-      },
-      {
-        name: '其他2',
-        type: 'circle'
-      }
-    ]
-  }
 ])
 const handleMenu = name => {
   console.log('name', name)
@@ -88,7 +75,7 @@ li {
     text-align: left;
   }
   > ul {
-    padding-left: 10px;
+    padding-left: 20px;
     > li:hover {
       background-color: #6b6b6b;
     }
@@ -96,23 +83,23 @@ li {
       float: left;
       position: relative;
       text-align: left;
-      height: 40px;
-      line-height: 40px;
-      padding: 0 10px;
+      height: 50px;
+      line-height: 50px;
+      padding: 0 15px;
 
       ul {
         width: 100%;
         background: #6b6b6b;
         position: fixed;
-        padding-left: 10px;
+        padding-left: 20px;
         left: 0;
-        top: 40px;
+        top: 50px;
         display: none;
         li {
-          height: 40px;
-          line-height: 40px;
+          height: 50px;
+          line-height: 50px;
           > span {
-            padding: 10px;
+            padding: 10px 15px;
           }
           > span:hover,
           .type-actived {

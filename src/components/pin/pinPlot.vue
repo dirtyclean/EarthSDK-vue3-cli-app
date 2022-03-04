@@ -5,13 +5,16 @@
 <script>
 import pinModal from './pinModal.vue'
 import { generator } from '@/utils/methods'
+const defaultConfig = {
+  creating: false, // 创建
+  editing: false, // 编辑
+  position: [0, 0, 0]
+}
 export default {
   data() {
     return {
       open: false,
-      creating: false, // 创建
-      editing: false, // 编辑
-      position: [0, 0, 0]
+      ...defaultConfig
     }
   },
   props: {
@@ -37,7 +40,7 @@ export default {
           name: id,
           xbsjType: 'Pin',
           near: 100,
-          position: []
+          ...defaultConfig
         }
       }
       const earth = this._earth // 利用浅拷贝

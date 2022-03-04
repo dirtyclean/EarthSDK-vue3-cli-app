@@ -6,26 +6,40 @@
     v-model:outlineShow="outlineShow"
     v-model:ground="ground"
     v-model:outlineWidth="outlineWidth"
-    v-model:colors="colors"
+    v-model:color="color"
+    v-model:outlineColor="outlineColor"
     @colorChange="colorChange"
     :title="areaName"
+    :defaultColor="defaultColor"
+    :defaultOutlineColor="defaultOutlineColor"
   />
 </template>
 
 <script>
 import areaModal from './areaModal.vue'
 import { generator } from '@/utils/methods'
+// 必须6位的16进制 否则input-color会显示出错
+const defaultColor = '#FFB6C1'
+const defaultOutlineColor = '#00BFFF'
+let defaultConfig
 export default {
   data() {
-    return {
-      open: false,
+    defaultConfig = {
       creating: false, // 创建
       editing: false, // 编辑
       outlineShow: true, // 边框显示
       ground: true, // 贴地
-      outlineWidth: 5, // 宽度
-      colors: [0, 0, 0, 0],
-      _area: undefined
+      outlineWidth: 2, // 宽度
+      // xeColor 是把一个字符串#000，转成 [1, 1, 1, 1]这种形式的颜色供EarthSDK使用，扩展了String的属性
+      color: defaultColor.xeColor, // xeColor
+      outlineColor: defaultOutlineColor.xeColor // xeColor
+    }
+    return {
+      open: false,
+      ...defaultConfig,
+      _area: undefined,
+      defaultColor,
+      defaultOutlineColor
     }
   },
   props: {
@@ -49,16 +63,14 @@ export default {
     this.renderArea()
   },
   methods: {
-    colorChange(color, type) {
-      this._area[type] = color
-    },
     renderArea(id = generator.randomNum) {
       this.unbind()
       const czmObject = {
         ref: id,
         czmObject: {
           xbsjType: this.areaType,
-          positions: []
+          positions: [],
+          ...Object.assign(defaultConfig, {})
         }
       }
       const earth = this._earth
@@ -70,13 +82,24 @@ export default {
       this._outlineShowUnbind = XE.MVVM.bind(this, 'outlineShow', area, 'outlineShow')
       this._groundUnbind = XE.MVVM.bind(this, 'ground', area, 'ground')
       this._outlineWidthUnbind = XE.MVVM.bind(this, 'outlineWidth', area, 'outlineWidth')
-      this._colorsUnbind = XE.MVVM.bind(this, 'colors', area, 'color')
+      this._colorUnbind = XE.MVVM.bind(this, 'color', area, 'color')
+      this._outlineColorUnbind = XE.MVVM.bind(this, 'outlineColor', area, 'outlineColor')
+      console.log('默认边框颜色：', area.outlineColor)
+      console.log('默认填充颜色：', area.color)
       XE.MVVM.watch(area, 'creating', () => {
         console.log('creating发生变化：' + this.creating)
         if (!this.creating) {
           this.open = true
-          console.log('打开面板')
+          console.log('打开面板', this.outlineWidth)
         }
+      })
+      XE.MVVM.watch(area, 'color', () => {
+        console.log('color发生变化：' + this.color)
+        console.log('填充颜色：', area.color)
+      })
+      XE.MVVM.watch(area, 'outlineColor', () => {
+        console.log('outlineColor发生变化：' + this.outlineColor)
+        console.log('边框颜色：', area.outlineColor)
       })
       area.onclick = () => {
         console.log('区域的点击事件！')
@@ -93,7 +116,8 @@ export default {
       this._outlineShowUnbind = this._outlineShowUnbind && this._outlineShowUnbind()
       this._groundUnbind = this._groundUnbind && this._groundUnbind()
       this._outlineWidthUnbind = this._outlineWidthUnbind && this._outlineWidthUnbind()
-      this._colorsUnbind = this._colorsUnbind && this._colorsUnbind()
+      this._colorUnbind = this._colorUnbind && this._colorUnbind()
+      this._outlineColorUnbind = this._outlineColorUnbind && this._outlineColorUnbind()
     }
   },
   // 1.2 资源销毁

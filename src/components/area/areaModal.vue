@@ -52,23 +52,23 @@
       </a-row>
       <a-row :gutter="10">
         <a-col :span="24">
-          <a-form-item label="填充颜色" name="content">
-            <input class="colorbox" type="color" value="#00ff40" @input="fillColorChange" />
+          <a-form-item label="填充颜色">
+            <input class="colorbox" type="color" :value="defaultColor" @input="fillColorChange" />
           </a-form-item>
         </a-col>
       </a-row>
       <a-row :gutter="10">
         <a-col :span="24">
-          <a-form-item label="填充不透明度" name="colors[3]" class="form-progress">
-            <input type="range" min="0" max="1" step="0.1" v-model.number="formState.colors[3]" />
-            <span>{{ formState.colors[3] }}</span>
+          <a-form-item label="填充不透明度" :name="['color', 3]" class="form-progress">
+            <input type="range" min="0" max="1" step="0.1" v-model.number="formState.color[3]" />
+            <span>{{ formState.color[3] }}</span>
           </a-form-item>
         </a-col>
       </a-row>
       <a-row :gutter="10">
         <a-col :span="24">
-          <a-form-item label="边框颜色" name="colors[3]">
-            <input class="colorbox" type="color" value="#00ff40" @input="outlineColorChange" />
+          <a-form-item label="边框颜色">
+            <input class="colorbox" type="color" :value="defaultOutlineColor" @input="outlineColorChange" />
           </a-form-item>
         </a-col>
       </a-row>
@@ -114,7 +114,8 @@ export default defineComponent({
     'update:outlineShow',
     'update:ground',
     'update:outlineWidth',
-    'update:colors'
+    'update:color',
+    'update:outlineColor'
   ],
   props: {
     open: {
@@ -146,9 +147,21 @@ export default defineComponent({
       type: Number,
       default: 5
     },
-    colors: {
+    outlineColor: {
       type: Array,
       default: () => [0, 0, 0, 0]
+    },
+    color: {
+      type: Array,
+      default: () => [0, 0, 0, 0]
+    },
+    defaultColor: {
+      type: String,
+      default: ''
+    },
+    defaultOutlineColor: {
+      type: String,
+      default: ''
     }
   },
   mounted() {
@@ -157,11 +170,11 @@ export default defineComponent({
   methods: {
     fillColorChange(event) {
       const color = event.target.value
-      this.$emit('colorChange', color.xeColor, 'color')
+      this.$emit('update:color', color.xeColor)
     },
     outlineColorChange(event) {
       const outlineColor = event.target.value
-      this.$emit('colorChange', outlineColor.xeColor, 'outlineColor')
+      this.$emit('update:outlineColor', outlineColor.xeColor)
     }
   },
   setup(props, context) {
@@ -171,10 +184,27 @@ export default defineComponent({
       outlineShow: useVModel(props, 'outlineShow'), // 边框显示
       ground: useVModel(props, 'ground'), // 贴地
       outlineWidth: useVModel(props, 'outlineWidth'), // 宽度
-      colors: useVModel(props, 'colors')
+      color: useVModel(props, 'color'),
+      outlineColor: useVModel(props, 'outlineColor'),
+      name: '',
+      content: ''
     })
     const onFinish = values => {
-      console.log('Success:', values)
+      const { creating, editing, outlineShow, ground, outlineWidth, color, outlineColor, name, content } = formState
+      console.log(
+        'Success:',
+        values,
+        formState,
+        creating,
+        editing,
+        outlineShow,
+        ground,
+        outlineWidth,
+        color,
+        outlineColor,
+        name,
+        content
+      )
     }
 
     const onFinishFailed = errorInfo => {

@@ -1,5 +1,5 @@
 <template>
-  <modal class="tree-box" :open="true" :showCloseIcon="false">
+  <modal class="tree-box" :open="true" :showCloseIcon="false" title="企业点位信息">
     <tree
       v-model:selectedKeys="selectedKeys"
       v-model:checkedKeys="checkedKeys"
@@ -7,11 +7,15 @@
       checkable
       :height="500"
       :tree-data="treeData"
+      :replace-fields="{
+        children: 'children',
+        title: 'name',
+        key: 'id'
+      }"
       @select="renderPin"
     >
-      <template #title="{ title, key }">
-        <span v-if="key === '0-0-1-0'" style="color: #1890ff">{{ title }}</span>
-        <template v-else>{{ title }}</template>
+      <template #title="{ name }">
+        {{ name }}
       </template>
     </tree>
   </modal>
@@ -20,27 +24,75 @@
 import { defineComponent, ref, watch } from 'vue'
 import { Tree } from 'ant-design-vue'
 import modal from '../modal'
-function dig(path = '0', level = 3) {
-  const list = []
-
-  for (let i = 0; i < 10; i += 1) {
-    const key = `${path}-${i}`
-    const treeNode = {
-      title: key,
-      key
-    }
-
-    if (level > 0) {
-      treeNode.children = dig(key, level - 1)
-    }
-
-    list.push(treeNode)
+const treeData = [
+  {
+    id: '0',
+    name: '0',
+    content: '0',
+    children: [
+      {
+        id: '0-0',
+        name: '0-0',
+        content: '0-0',
+        children: [
+          {
+            id: '0-0-0',
+            name: '0-0-0',
+            content: '0-0-0'
+          }
+        ]
+      },
+      {
+        id: '0-1',
+        name: '0-1',
+        content: '0-1',
+        children: [
+          {
+            id: '0-1-0',
+            name: '0-1-0',
+            content: '0-1-0'
+          },
+          {
+            id: '0-1-1',
+            name: '0-1-1',
+            content: '0-1-1'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '1',
+    name: '1',
+    content: '1',
+    children: [
+      {
+        id: '1-0',
+        name: '1-0',
+        content: '1-0',
+        children: [
+          {
+            id: '1-0-0',
+            name: '1-0-0',
+            content: '1-0-0'
+          },
+          {
+            id: '1-0-1',
+            name: '1-0-1',
+            content: '1-0-1'
+          },
+          {
+            id: '1-0-2',
+            name: '1-0-2',
+            content: '1-0-2'
+          }
+        ]
+      }
+    ]
   }
-
-  return list
-}
+]
 export default defineComponent({
-  setup() {
+  setup(props, context) {
     const selectedKeys = ref(['0-0-0', '0-0-1'])
     const checkedKeys = ref(['0-0-0', '0-0-1'])
     watch(selectedKeys, () => {
@@ -49,10 +101,14 @@ export default defineComponent({
     watch(checkedKeys, () => {
       console.log('checkedKeys', checkedKeys)
     })
+    const renderPin = () => {
+      context.emit('renderPin')
+    }
     return {
-      treeData: dig(),
+      treeData,
       selectedKeys,
-      checkedKeys
+      checkedKeys,
+      renderPin
     }
   },
   components: {

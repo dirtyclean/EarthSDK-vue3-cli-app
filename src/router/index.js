@@ -1,6 +1,13 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 export const routes = [
   {
+    path: '/',
+    component: async () => await import('@/views/plotTools.vue'),
+    meta: {
+      title: 'plotTools'
+    }
+  },
+  {
     path: '/earthComp',
     component: async () => await import('@/views/earthComp.vue'),
     meta: {

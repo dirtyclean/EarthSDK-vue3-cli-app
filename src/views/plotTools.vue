@@ -4,8 +4,8 @@
     <menu-nav @renderArea="renderArea" />
     <geo-area-plot :title="areaName" v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="sceneAreaKey" />
     <pin-plot v-if="isPlotPin" :_earth="_earth" :key="scenePinKey" />
-    <pinTree />
-    <pinModal v-model:open="open" />
+    <pin-tree @renderPin="renderPin" />
+    <pin-modal v-model:open="open" />
   </div>
 </template>
 <script>
