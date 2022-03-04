@@ -18,7 +18,7 @@
       <template #title="{ name, id }">
         <a-dropdown
           :trigger="['contextmenu']"
-          :overlayClassName="`plot-type-menu-${id}`"
+          :overlayClassName="`plot-type-menu plot-type-menu-${id}`"
           :getPopupContainer="node => getPopupContainer(node, id)"
         >
           <span>{{ name }}</span>
@@ -185,6 +185,7 @@ export default defineComponent({
   left: 18px;
   top: 300px;
   width: 294px;
+  background-color: rgba(71, 71, 71, 0.8);
   :deep(.ant-tree) {
     background-color: transparent;
     color: #fff;

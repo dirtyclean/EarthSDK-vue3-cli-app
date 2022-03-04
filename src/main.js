@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import '@/assets/styles/cover.scss'
 import App from './App.vue'
 import router, { setupRouter } from './router'
 const app = createApp(App)

@@ -1,21 +1,21 @@
 <template>
   <div style="width: 100%; height: 100%">
     <div ref="earthContainer" style="width: 100%; height: 100%"></div>
+    <ent-select />
     <info-tree @renderPin="renderPin" @renderArea="renderArea" />
-    <menu-nav @renderPin="renderPin" @renderArea="renderArea" />
+    <menu-nav v-if="false" @renderPin="renderPin" @renderArea="renderArea" />
     <geo-area-plot :title="areaName" v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="sceneAreaKey" />
     <pin-plot v-if="isPlotPin" :_earth="_earth" :key="scenePinKey" />
-    <pin-modal v-model:open="open" />
   </div>
 </template>
 <script>
 import { defineComponent } from 'vue'
-import pinModal from '../components/pin//pinModal'
 
 import menuNav from '../components/nav.vue'
 import geoAreaPlot from '../components/area/geoAreaPlot.vue'
 import pinPlot from '../components/pin/pinPlot.vue'
 import infoTree from '../components/infoTree.vue'
+import entSelect from '@/components/entSelect.vue'
 export default defineComponent({
   data() {
     return {
@@ -29,11 +29,11 @@ export default defineComponent({
     }
   },
   components: {
-    pinModal,
     menuNav,
     geoAreaPlot,
     pinPlot,
-    infoTree
+    infoTree,
+    entSelect
   },
   methods: {
     // 绘制多个点 就多次调用这个 通过更新key
