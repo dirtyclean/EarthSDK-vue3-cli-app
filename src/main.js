@@ -2,7 +2,9 @@ import { createApp } from 'vue'
 import '@/assets/styles/cover.scss'
 import App from './App.vue'
 import router, { setupRouter } from './router'
+import apiRequest from '@/api/index'
 const app = createApp(App)
+app.config.globalProperties.$apiReq = apiRequest
 setupRouter(app)
 // createApp(App).mount('#app')
 /* eslint-disable */
@@ -17,3 +19,4 @@ XE.ready()
   .then(function startup() {
     router.isReady().then(() => app.mount('#app'))
   })
+  export default app.config.globalProperties

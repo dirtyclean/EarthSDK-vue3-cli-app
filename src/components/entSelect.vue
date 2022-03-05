@@ -38,11 +38,37 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { Cascader as ACascader } from 'ant-design-vue'
+import { getSelectedIds } from '@/utils/methods'
 import lazyLoadingSelect from './lazyLoadingSelect/async.vue'
+import self from '@/main.js'
 const areaIds = reactive([])
 const ent = reactive()
-const areaData = reactive([])
+let areaData = reactive([])
 const entTotal = ref(0)
+const getAreaTreeData = () => {
+  self.$apiReq.getAreaTreeData().then(data => {
+    areaData = data
+  })
+}
+getAreaTreeData()
+const getAsyncEnterpriseData = requestParams => {
+  const areaId = this.form.areaIds.slice(-1)[0]
+  if (!areaId) {
+    this.entTotal = 0
+    return []
+  }
+  return this.$apiReq.dictionary
+    .getEnterpriseList({
+      pageNum: requestParams.pageNum,
+      pageSize: requestParams.pageSize,
+      name: requestParams.searchName,
+      areaId
+    })
+    .then(({ data: { list, rowCount } }) => {
+      this.entTotal = rowCount
+      return list
+    })
+}
 </script>
 <style scoped lang="scss">
 .ent-select-box {

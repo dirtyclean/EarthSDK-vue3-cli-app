@@ -20,12 +20,19 @@ module.exports = {
     config.plugins.push(cwp)
   },
   devServer: {
-    port: 8080,
+    port: 8081,
     open: false,
     // 让浏览器 overlay 同时显示eslint的警告和错误
     overlay: {
       warnings: false,
       errors: false
+    },
+    proxy: {
+      '/pc': {
+        target: 'https://hcs-fxyp-dht.scdem.cn',
+        changeOrigin: true,
+        ws: true
+      }
     }
   }
 }
