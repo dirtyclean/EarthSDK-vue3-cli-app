@@ -136,11 +136,11 @@ export default defineComponent({
       console.log('checkedKeys', checkedKeys)
     })
     const renderPin = () => {
-      // context.emit('renderPin')
+      context.emit('renderPin')
     }
     const onContextMenuClick = menuKey => {
       console.log(menuKey)
-
+      context.emit('unbindPin') // 解决先点击节点，然后再右键创建标绘图形bug
       if (menuKey === 'Pin') {
         context.emit('renderPin')
       } else {

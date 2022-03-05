@@ -2,10 +2,11 @@
   <div style="width: 100%; height: 100%">
     <div ref="earthContainer" style="width: 100%; height: 100%"></div>
     <ent-select />
-    <info-tree @renderPin="renderPin" @renderArea="renderArea" />
     <menu-nav v-if="false" @renderPin="renderPin" @renderArea="renderArea" />
-    <geo-area-plot :title="areaName" v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="sceneAreaKey" />
-    <pin-plot v-if="isPlotPin" :_earth="_earth" :key="scenePinKey" />
+    <geo-area-plot :areaName="areaName" v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="sceneAreaKey" />
+    <pin-plot v-if="isPlotPin" :_earth="_earth" :key="scenePinKey" ref="pinPlot" />
+    <!-- 不能提前放置，否则区域、点弹窗无法拖动 -->
+    <info-tree @renderPin="renderPin" @renderArea="renderArea" @unbindPin="unbindPin" />
   </div>
 </template>
 <script>
@@ -36,15 +37,20 @@ export default defineComponent({
     entSelect
   },
   methods: {
+    unbindPin() {
+      this.$refs.pinPlot.unbind()
+    },
     // 绘制多个点 就多次调用这个 通过更新key
     // 如果想要多个点的弹窗同时出现 就用v-for生成组件 而不是用更新key
     renderPin() {
+      console.log('renderPin')
       this.scenePinKey = this.scenePinKey + 1
       this.isPlotPin = true
     },
     // 绘制多个区域图形 就多次调用这个 通过更新key
     // 如果想要多个区域图形的弹窗同时出现 就用v-for生成组件 而不是用更新key
     renderArea(type, name) {
+      console.log('renderArea')
       this.sceneAreaKey = this.sceneAreaKey + 1
       this.areaType = type
       this.areaName = name

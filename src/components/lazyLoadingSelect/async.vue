@@ -34,6 +34,7 @@
     id="lazyLoadingSelect"
     :clearIcon="clearIcon"
     :disabled="disabled"
+    :popupClassName="popupClassName"
   >
     <a-spin v-if="fetching" slot="notFoundContent" size="small" />
     <template v-slot:suffixIcon>
@@ -141,6 +142,10 @@ export default {
       type: String,
       required: false,
       default: 'value'
+    },
+    popupClassName: {
+      type: String,
+      required: false
     },
     showArrow: {
       type: Boolean,

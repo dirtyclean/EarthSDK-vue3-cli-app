@@ -9,6 +9,7 @@
       v-model:value="areaIds"
       change-on-select
       expand-trigger="hover"
+      popupClassName="ant-select-dropdown-custom"
       @change="ent = undefined"
       style="margin-right: 20px"
     />
@@ -17,6 +18,7 @@
       :disabled="!!currRow"
       :pageSize="10"
       :allowClear="true"
+      popupClassName="ant-select-dropdown-custom"
       :dropdownMatchSelectWidth="false"
       v-model:total="entTotal"
       placeholder="请选择企业"
@@ -49,13 +51,18 @@ const entTotal = ref(0)
   top: 20px;
   z-index: 9999;
 }
-:deep(.ant-select) {
-  border-radius: 6px;
-}
 :deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector) {
   background-color: rgba(71, 71, 71, 0.8);
+  border-radius: 6px;
+  border-color: transparent;
+}
+:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-search-input) {
+  color: #fff;
 }
 :deep(.ant-select-selection-placeholder) {
+  color: #fff;
+}
+:deep(.ant-select-arrow) {
   color: #fff;
 }
 </style>
