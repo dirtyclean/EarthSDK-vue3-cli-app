@@ -4,9 +4,16 @@
     <ent-select />
     <menu-nav v-if="false" @renderPin="renderPin" @renderArea="renderArea" />
     <geo-area-plot :areaName="areaName" v-if="isPlotArea" :areaType="areaType" :_earth="_earth" :key="sceneAreaKey" />
-    <pin-plot v-if="isPlotPin" :_earth="_earth" :key="scenePinKey" ref="pinPlot" />
+    <pin-plot
+      :currNodeOption="currNodeOption"
+      @deleteCurrNode="deleteCurrNode"
+      v-if="isPlotPin"
+      :_earth="_earth"
+      :key="scenePinKey"
+      ref="pinPlot"
+    />
     <!-- 不能提前放置，否则区域、点弹窗无法拖动 -->
-    <info-tree @renderPin="renderPin" @renderArea="renderArea" @unbindPin="unbindPin" />
+    <info-tree ref="infoTree" @renderPin="renderPin" @renderArea="renderArea" @unbindPin="unbindPin" />
   </div>
 </template>
 <script>
@@ -26,7 +33,8 @@ export default defineComponent({
       areaType: undefined,
       areaName: undefined,
       isPlotArea: false,
-      isPlotPin: false
+      isPlotPin: false,
+      currNodeOption: {}
     }
   },
   components: {
@@ -40,12 +48,16 @@ export default defineComponent({
     unbindPin() {
       this.$refs.pinPlot.unbind()
     },
+    deleteCurrNode() {
+      this.$refs.infoTree.deleteCurrNode()
+    },
     // 绘制多个点 就多次调用这个 通过更新key
     // 如果想要多个点的弹窗同时出现 就用v-for生成组件 而不是用更新key
-    renderPin() {
-      console.log('renderPin')
+    renderPin(option) {
+      console.log('renderPin', option)
       this.scenePinKey = this.scenePinKey + 1
       this.isPlotPin = true
+      this.currNodeOption = { ...option }
     },
     // 绘制多个区域图形 就多次调用这个 通过更新key
     // 如果想要多个区域图形的弹窗同时出现 就用v-for生成组件 而不是用更新key

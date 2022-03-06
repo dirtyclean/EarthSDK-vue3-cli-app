@@ -6,6 +6,7 @@
     v-model:position="position"
     v-model:name="name"
     v-model:content="content"
+    @operateEmit="operateEmit"
   />
 </template>
 
@@ -19,16 +20,25 @@ const defaultConfig = {
 }
 export default {
   data() {
+    const { name, content, id } = this.currNodeOption
     return {
       open: false,
       ...defaultConfig,
-      name: '',
-      content: ''
+      name,
+      content,
+      id
     }
   },
   props: {
     _earth: {
       required: true
+    },
+    currNodeOption: {
+      required: true,
+      dafault: () => {
+        return {}
+      },
+      type: Object
     }
   },
   components: {
@@ -39,6 +49,13 @@ export default {
     this.renderPin()
   },
   methods: {
+    operateEmit(type) {
+      if (type === 'saveSuccess') {
+        console.log('保存成功之后删除节点信息')
+        this.$emit('deleteCurrNode')
+      } else if (type === 'close') {
+      }
+    },
     renderPin(id = generator.randomNum) {
       console.log('renderPin')
       this.unbind()

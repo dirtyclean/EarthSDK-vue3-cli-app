@@ -2,7 +2,7 @@
  * @Author: dirtyclean
  * @Date: 2021-07-05 10:16:50
  * @Last Modified by: dirtyclean
- * @Last Modified time: 2021-12-10 10:46:30
+ * @Last Modified time: 2022-03-06 20:44:26
  */
 import axios from 'axios'
 import { notification, message } from 'ant-design-vue'
@@ -19,7 +19,6 @@ service.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 service.interceptors.request.use(config => {
   const token = getStorage('token')
   const fileToken = getStorage('fileToken')
-  const currUserSys = router.currentRoute.path.split('/')[1]
   if (fileToken) {
     config.headers.token = fileToken
     // removeStorage('fileToken')
@@ -27,7 +26,6 @@ service.interceptors.request.use(config => {
   if (token) {
     config.headers.Authorization = constant.TOKEN_PREFIX + token
   }
-  config.headers.systemID = getStorage('system') && getStorage('system')[currUserSys]
   return config
 })
 

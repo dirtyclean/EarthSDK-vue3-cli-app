@@ -100,7 +100,7 @@ export default defineComponent({
     ACol: Col,
     modal
   },
-  emits: ['update:creating', 'update:editing', 'update:position'],
+  emits: ['update:creating', 'update:editing', 'update:position', 'operateEmit'],
   props: {
     open: {
       type: Boolean,
@@ -143,6 +143,7 @@ export default defineComponent({
 
     const onFinish = values => {
       console.log('Success:', values)
+      context.emit('operateEmit', 'saveSuccess')
     }
 
     const onFinishFailed = errorInfo => {

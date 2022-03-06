@@ -4,21 +4,20 @@
       :options="areaData"
       placeholder="请选择所属区域"
       :showSearch="{ matchInputWidth: false }"
-      :fieldNames="{ label: 'areaName', value: 'id', children: 'children' }"
+      :fieldNames="{ label: 'name', value: 'id', children: 'children' }"
       :allowClear="true"
       v-model:value="areaIds"
       change-on-select
       expand-trigger="hover"
-      popupClassName="ant-select-dropdown-custom"
-      @change="ent = undefined"
+      dropdownClassName="ant-select-dropdown-custom"
+      @change="areaChange"
       style="margin-right: 20px"
     />
     <lazy-loading-select
       v-model:value="ent"
-      :disabled="!!currRow"
       :pageSize="10"
       :allowClear="true"
-      popupClassName="ant-select-dropdown-custom"
+      dropdownClassName="ant-select-dropdown-custom"
       :dropdownMatchSelectWidth="false"
       v-model:total="entTotal"
       placeholder="请选择企业"
@@ -41,23 +40,24 @@ import { Cascader as ACascader } from 'ant-design-vue'
 import { getSelectedIds } from '@/utils/methods'
 import lazyLoadingSelect from './lazyLoadingSelect/async.vue'
 import self from '@/main.js'
-const areaIds = reactive([])
-const ent = reactive()
-let areaData = reactive([])
+const areaIds = ref([])
+const ent = ref()
+const areaData = ref([])
 const entTotal = ref(0)
 const getAreaTreeData = () => {
   self.$apiReq.getAreaTreeData().then(data => {
-    areaData = data
+    areaData.value = data
+    console.log(areaData, '....areaData....')
   })
 }
 getAreaTreeData()
 const getAsyncEnterpriseData = requestParams => {
-  const areaId = this.form.areaIds.slice(-1)[0]
+  const areaId = areaIds.value.slice(-1)[0]
   if (!areaId) {
-    this.entTotal = 0
+    entTotal.value = 0
     return []
   }
-  return this.$apiReq.dictionary
+  return self.$apiReq
     .getEnterpriseList({
       pageNum: requestParams.pageNum,
       pageSize: requestParams.pageSize,
@@ -65,10 +65,15 @@ const getAsyncEnterpriseData = requestParams => {
       areaId
     })
     .then(({ data: { list, rowCount } }) => {
-      this.entTotal = rowCount
+      entTotal.value = rowCount
       return list
     })
 }
+const areaChange = () => {
+  console.log('区域改变', ent)
+  // ent.value = undefined
+}
+const entChange = () => {}
 </script>
 <style scoped lang="scss">
 .ent-select-box {
@@ -89,6 +94,9 @@ const getAsyncEnterpriseData = requestParams => {
   color: #fff;
 }
 :deep(.ant-select-arrow) {
+  color: #fff;
+}
+:deep(.ant-select-selection-item) {
   color: #fff;
 }
 </style>

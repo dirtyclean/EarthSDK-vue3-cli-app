@@ -4,7 +4,7 @@
     * @Author: dirtyclean 
     * @Date: 2021-07-05 10:11:10 
  * @Last Modified by: dirtyclean
- * @Last Modified time: 2022-03-04 16:45:35
+ * @Last Modified time: 2022-03-06 21:52:34
     */
 -->
 <template>
@@ -34,10 +34,12 @@
     id="lazyLoadingSelect"
     :clearIcon="clearIcon"
     :disabled="disabled"
-    :popupClassName="popupClassName"
+    :dropdownClassName="dropdownClassName"
   >
-    <a-spin v-if="fetching" slot="notFoundContent" size="small" />
-    <template v-slot:suffixIcon>
+    <template v-if="fetching" #notFoundContent>
+      <a-spin size="small" />
+    </template>
+    <template #suffixIcon>
       <slot name="suffixIcon"></slot>
     </template>
     <slot :currOptions="currOptions">
@@ -62,6 +64,7 @@
 </template>
 <script>
 import { Select, Spin } from 'ant-design-vue'
+import { closeCircleOutlined } from '@ant-design/icons-vue'
 function getCurrPaginationData(pageNo, pageSize, array) {
   const offset = (pageNo - 1) * pageSize
   return offset + pageSize >= array.length ? array.slice(offset, array.length) : array.slice(offset, offset + pageSize)
@@ -143,7 +146,7 @@ export default {
       required: false,
       default: 'value'
     },
-    popupClassName: {
+    dropdownClassName: {
       type: String,
       required: false
     },
@@ -208,8 +211,7 @@ export default {
     // 多选框清空图标
     clearIcon() {
       return (
-        <a-icon
-          type="close-circle"
+        <closeCircleOutlined
           on-click={e => {
             e.stopPropagation()
             this.$emit('change', [])
@@ -222,6 +224,7 @@ export default {
       )
     },
     change(value, option) {
+      console.log(value, '===value===')
       this.$emit('change', value, option)
     },
     updateCurrOptions(isOpen) {

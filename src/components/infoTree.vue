@@ -2,13 +2,12 @@
   <modal class="tree-box" :open="true" :showCloseIcon="false" title="企业点位信息">
     <tree
       v-model:selectedKeys="selectedKeys"
-      v-model:checkedKeys="checkedKeys"
       :blockNode="false"
       default-expand-all
-      checkable
+      :checkable="false"
       :height="500"
       :tree-data="treeData"
-      :replace-fields="{
+      :fieldNames="{
         children: 'children',
         title: 'name',
         key: 'id'
@@ -36,7 +35,7 @@
 import { defineComponent, ref, watch } from 'vue'
 import { Tree, Dropdown, Menu } from 'ant-design-vue'
 import modal from './modal'
-const treeData = [
+const data = [
   {
     id: '0',
     name: '0',
@@ -127,16 +126,29 @@ const plotTypeData = [
 ]
 export default defineComponent({
   setup(props, context) {
-    const selectedKeys = ref(['0-0-0', '0-0-1'])
-    const checkedKeys = ref(['0-0-0', '0-0-1'])
+    const selectedKeys = ref([])
+    const treeData = ref(data)
     watch(selectedKeys, () => {
       console.log('selectedKeys', selectedKeys)
     })
-    watch(checkedKeys, () => {
-      console.log('checkedKeys', checkedKeys)
-    })
-    const renderPin = () => {
-      context.emit('renderPin')
+    const renderPin = (key, option) => {
+      console.log(key, option)
+      const {
+        node: { children, id, content, name }
+      } = option
+      if (children && children.length) {
+        // 不能这样判断 只有信息节点可以创建场景信息 应该判断是否为信息节点
+        return
+      }
+      context.emit('renderPin', {
+        id,
+        content,
+        name
+      })
+    }
+    const deleteCurrNode = () => {
+      console.log('deleteCurrNode')
+      // 递归查找selectedKeys节点信息 然后删除
     }
     const onContextMenuClick = menuKey => {
       console.log(menuKey)
@@ -164,11 +176,11 @@ export default defineComponent({
     return {
       treeData,
       selectedKeys,
-      checkedKeys,
       plotTypeData,
       renderPin,
       onContextMenuClick,
-      getPopupContainer
+      getPopupContainer,
+      deleteCurrNode
     }
   },
   components: {

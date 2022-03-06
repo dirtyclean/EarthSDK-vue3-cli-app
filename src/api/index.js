@@ -16,7 +16,11 @@ const getAreaTreeData = async ({ name } = { name: '' }) => {
     })
     .catch(() => {})
 }
-
+const getEnterpriseList = ({ areaId, pageNum, pageSize, name }) => {
+  const organizationType = '01'
+  return req.get('/pc/org/v1/orgs', { pageNum, pageSize, areaId, organizationType, type: '00', name })
+}
 export default {
-  getAreaTreeData
+  getAreaTreeData,
+  getEnterpriseList
 }
